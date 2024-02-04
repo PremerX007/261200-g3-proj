@@ -7,26 +7,21 @@ public class ExprTokenizer implements Tokenizer{
     private String src;
     private String next;
     private int pos;
-    private int line;
     public ExprTokenizer() throws Exception {
-        this.line = 1;
+        this.pos = 0;
         ReadConstructionPlan();
         computeNext();
     }
 
     public void ReadConstructionPlan(){
         try (BufferedReader reader = new BufferedReader(new FileReader("src/conp.txt"))){
-            long currentLine = 1;
-            while ((src = reader.readLine()) != null){
-                if(currentLine < line){
-                    currentLine++;
-                    continue;
-                }
-                this.line++;
-                this.pos = 0;
-                return;
+            StringBuilder str = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null){
+                str.append(line);
+                str.append(' ');
             }
-            next = null;
+            this.src = str.toString();
         } catch (IOException e){
             System.err.format("System can not manage target file : %s%n", e);
         } catch (Exception e) {
@@ -72,8 +67,7 @@ public class ExprTokenizer implements Tokenizer{
         }
 
         if (pos == src.length()) { // no more tokens
-            ReadConstructionPlan();
-            computeNext();
+            next = null;
             return;
         }
 
