@@ -18,14 +18,13 @@ public class ExprTokenizer implements Tokenizer{
             StringBuilder str = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null){
+                line = line.replaceAll("#.*", "");
                 str.append(line);
                 str.append(' ');
             }
             this.src = str.toString();
         } catch (IOException e){
             System.err.format("System can not manage target file : %s%n", e);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 
