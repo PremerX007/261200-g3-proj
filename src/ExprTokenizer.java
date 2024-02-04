@@ -73,6 +73,7 @@ public class ExprTokenizer implements Tokenizer{
 
         if (pos == src.length()) { // no more tokens
             ReadConstructionPlan();
+            computeNext();
             return;
         }
 
@@ -90,7 +91,7 @@ public class ExprTokenizer implements Tokenizer{
                 s.append(src.charAt(pos));
             }
         }
-        else if (c == '+' || c == '(' || c == '-' || c == '*' || c == '/' || c == '%' || c == ')') {
+        else if (c == '+' || c == '(' || c == '-' || c == '*' || c == '/' || c == '%' || c == ')' || c == '=' || c == '{' || c == '}' || c == '^') {
             s.append(c);
             pos++;
         }
