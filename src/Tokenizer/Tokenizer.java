@@ -1,3 +1,5 @@
+package Tokenizer;
+
 public interface Tokenizer {
     boolean hasNextToken();
     String peek();

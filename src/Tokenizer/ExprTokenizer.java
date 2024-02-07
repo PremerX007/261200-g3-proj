@@ -1,3 +1,5 @@
+package Tokenizer;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -14,7 +16,7 @@ public class ExprTokenizer implements Tokenizer{
     }
 
     public void ReadConstructionPlan(){
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/conp.txt"))){
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/Tokenizer/conp.txt"))){
             StringBuilder str = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null){
