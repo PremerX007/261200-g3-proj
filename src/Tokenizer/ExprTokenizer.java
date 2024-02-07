@@ -9,14 +9,14 @@ public class ExprTokenizer implements Tokenizer{
     private String src;
     private String next;
     private int pos;
-    public ExprTokenizer() throws Exception {
+    public ExprTokenizer(String filename) throws Exception {
         this.pos = 0;
-        ReadConstructionPlan();
+        ReadConstructionPlan(filename);
         computeNext();
     }
 
-    public void ReadConstructionPlan(){
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/Tokenizer/conp.txt"))){
+    public void ReadConstructionPlan(String filename){
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))){
             StringBuilder str = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null){
@@ -96,4 +96,5 @@ public class ExprTokenizer implements Tokenizer{
         next = s.toString();
     }
     //group 3
+    //group 4
 }
