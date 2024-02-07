@@ -47,16 +47,28 @@ public class PlanParser implements Parser{
 
     }
 
-    private void parseIfStatement() {
-
+    private void parseIfStatement() throws Exception {
+        tkz.consume("if");
+        tkz.consume("(");
+        Expr ex = parseExpression(); // no-op not complete
+        tkz.consume(")");
+        if(ex.eval(identifier) > 0){
+            tkz.consume("then");
+            parseStatement();
+        } else {
+            tkz.consume("else");
+            parseStatement();
+        }
     }
 
     private void parseWhileStatement() throws Exception {
         tkz.consume("while");
         tkz.consume("(");
-        parseExpression();
+        Expr ex = parseExpression(); // no-op not complete
         tkz.consume(")");
-        parseStatement();
+        for (int counter = 0; counter < 10000 && ex.eval(identifier) > 0; counter++){
+            parseStatement();
+        }
     }
 
     private void parseCommand() throws Exception {
@@ -74,8 +86,62 @@ public class PlanParser implements Parser{
         }
     }
 
-    private void parseActionCommand() {
-        
+    private void parseActionCommand() throws Exception {
+        if(tkz.peek("done")){
+            tkz.consume();
+            // Execute done method (require gameplay)
+        } else if (tkz.peek("relocate")) {
+            tkz.consume();
+            // Execute relocate method (require gameplay)
+        } else if (tkz.peek("move")) {
+            parseMoveCommand();
+        } else if (tkz.peek("invest") || tkz.peek("collect")) {
+            parseRegionCommand();
+        } else if (tkz.peek("shoot")) {
+            parseAttackCommand();
+        } else {
+            throw new Exception("Wrong grammar");
+        }
+
+    }
+
+    private void parseMoveCommand() throws Exception {
+        tkz.consume("move");
+        long d = parseDirection();
+        // Execute move method (require crew)
+    }
+
+    private long parseDirection() throws Exception {
+        return switch (tkz.consume()){
+            case "up" -> 1;
+            case "upright" -> 2;
+            case "downright" -> 3;
+            case "down" -> 4;
+            case "downleft" -> 5;
+            case "upleft" -> 6;
+            default -> throw new Exception("Direction in Structure Plan is not correct");
+        };
+    }
+
+    private void parseRegionCommand() throws Exception {
+        if(tkz.peek("invest")){
+            tkz.consume();
+            Expr ex = parseExpression();
+            // Execute invest method (require region)
+
+        } else if (tkz.peek("collect")) {
+            tkz.consume();
+            // Execute collect method (require region)
+            Expr ex = parseExpression();
+
+        }
+    }
+
+    private void parseAttackCommand() throws Exception {
+        tkz.consume("shoot");
+        long d = parseDirection();
+        Expr ex = parseExpression();
+        // Execute collect method (require crew)
     }
 
     private void parseAssignmentStatement() throws Exception {
