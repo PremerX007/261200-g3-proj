@@ -1,3 +1,4 @@
+package Maps;
 public class Mapping {
         protected long row;
         protected long column;

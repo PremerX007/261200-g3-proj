@@ -1,3 +1,4 @@
+package Maps;
 import java.util.Map;
 
 public class Region {
