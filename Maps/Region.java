@@ -39,4 +39,16 @@ public class Region {
     public void setPresident(Player president) {
         this.president = president;
     }
+
+    public Map<String, Region> getConnectReg() {
+        return connectReg;
+    }
+
+    public long getI() {
+        return i;
+    }
+
+    public long getJ() {
+        return j;
+    }
 }
