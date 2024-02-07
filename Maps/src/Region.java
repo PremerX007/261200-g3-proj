@@ -34,4 +34,8 @@ public class Region {
     public boolean checkCitycenter(){
         return citycenter;
     }
+
+    public void setPresident(Player president) {
+        this.president = president;
+    }
 }
