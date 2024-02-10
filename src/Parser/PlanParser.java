@@ -15,100 +15,111 @@ public class PlanParser implements Parser{
 
     @Override
     public void parse() throws Exception {
-        parsePlan();
-//        if(tkz.hasNextToken()) { throw new Exception("leftover token"); }
-    }
-
-    private void parsePlan() throws Exception {
         while(tkz.hasNextToken()){
-            parseStatement();
+            State s = parseStatement();
+            s.eval(identifier);
         }
     }
 
-    private void parseStatement() throws Exception {
-        if (tkz.peek("{")) {
-            parseBlockStatement();
-        } else if (tkz.peek("if")){
-            parseIfStatement();
-        } else if (tkz.peek("while")){
-            parseWhileStatement();
-        } else {
-            parseCommand();
-        }
+    private State parseStatement() throws Exception {
+        return switch (tkz.peek()) {
+            case "{"        -> parseBlockStatement();
+            case "if"       -> parseIfStatement();
+            case "while"    -> parseWhileStatement();
+            default         -> parseCommand();
+        };
     }
 
 
-    private void parseBlockStatement() throws Exception {
+    private State parseBlockStatement() throws Exception {
+        GroupState b = new BlockStatement();
         tkz.consume("{");
         while(!tkz.peek("}")){
-            parseStatement();
+            b.append(parseStatement());
         }
         tkz.consume("}");
-
+        return b;
     }
 
-    private void parseIfStatement() throws Exception {
+    private State parseIfStatement() throws Exception { // not complete
         tkz.consume("if");
+
         tkz.consume("(");
-        Expr ex = parseExpression(); // no-op not complete
+        Expr ex = parseExpression();
         tkz.consume(")");
-        if(ex.eval(identifier) > 0){
-            tkz.consume("then");
-            parseStatement();
+
+        tkz.consume("then");
+        State t = parseStatement();
+        tkz.consume("else");
+        State e = parseStatement();
+
+        if(ex.eval(identifier) > 0){ //think should change to AST
+            return t;
         } else {
-            tkz.consume("else");
-            parseStatement();
+            return e;
         }
     }
 
-    private void parseWhileStatement() throws Exception {
+    private State parseWhileStatement() throws Exception {
         tkz.consume("while");
         tkz.consume("(");
         Expr ex = parseExpression(); // no-op not complete
         tkz.consume(")");
-        for (int counter = 0; counter < 10000 && ex.eval(identifier) > 0; counter++){
-            parseStatement();
-        }
+
+        GroupState w = new WhileStatement(ex);
+        w.append(parseStatement());
+        return w;
     }
 
-    private void parseCommand() throws Exception {
-        switch (tkz.peek()){
-            case "done":
-            case "relocate":
-            case "move":
-            case "invest":
-            case "collect":
-            case "shoot":
-                parseActionCommand();
-                break;
-            default:
-                parseAssignmentStatement();
-        }
+    private State parseCommand() throws Exception {
+        return switch (tkz.peek()) {
+            case "done", "relocate", "move", "invest", "collect", "shoot" -> parseActionCommand();
+            default -> parseAssignmentStatement();
+        };
     }
 
-    private void parseActionCommand() throws Exception {
-        if(tkz.peek("done")){
-            tkz.consume();
-            // Execute done method (require gameplay)
-        } else if (tkz.peek("relocate")) {
-            tkz.consume();
-            // Execute relocate method (require gameplay)
-        } else if (tkz.peek("move")) {
-            parseMoveCommand();
-        } else if (tkz.peek("invest") || tkz.peek("collect")) {
-            parseRegionCommand();
-        } else if (tkz.peek("shoot")) {
-            parseAttackCommand();
-        } else {
-            throw new Exception("Wrong grammar");
-        }
-
+    private State parseActionCommand() throws Exception {
+        return switch (tkz.peek()) {
+            case "done"     -> parseDoneCommand();
+            case "relocate" -> parseRelocateCommand();
+            case "move"     -> parseMoveCommand();
+            case "invest", "collect" -> parseRegionCommand();
+            case "shoot"    -> parseAttackCommand();
+            default -> throw new Exception("Wrong grammar");
+        };
     }
 
-    private void parseMoveCommand() throws Exception {
+    private State parseDoneCommand() {
+        // Execute done method (require gameplay)
+        return new State() {
+            @Override
+            public void eval(Map<String, Integer> bindings) throws Exception {
+                System.out.println("Wait for \"done\" func");
+            }
+        };
+    }
+
+    private State parseRelocateCommand() {
+        // Execute relocate method (require gameplay)
+        return new State() {
+            @Override
+            public void eval(Map<String, Integer> bindings) throws Exception {
+                System.out.println("Wait for \"Relocate\" func");
+            }
+        };
+    }
+
+    private State parseMoveCommand() throws Exception {
         tkz.consume("move");
         long d = parseDirection();
         // Execute move method (require crew)
+        return new State() {
+            @Override
+            public void eval(Map<String, Integer> bindings) throws Exception {
+                System.out.println("Wait for \"Move\" func");
+                System.out.println("Direction = " + d);
+            }
+        };
     }
 
     private long parseDirection() throws Exception {
@@ -119,42 +130,59 @@ public class PlanParser implements Parser{
             case "down" -> 4;
             case "downleft" -> 5;
             case "upleft" -> 6;
-            default -> throw new Exception("Direction in Structure Plan is not correct");
+            default -> throw new Exception("Direction is not correct");
         };
     }
 
-    private void parseRegionCommand() throws Exception {
+    private State parseRegionCommand() throws Exception {
         if(tkz.peek("invest")){
             tkz.consume();
             Expr ex = parseExpression();
             // Execute invest method (require region)
+            return new State() {
+                @Override
+                public void eval(Map<String, Integer> bindings) throws Exception {
+                    System.out.println("Wait for \"Invest\" func");
+                    System.out.println("Invest Money is " + ex.eval(bindings) + " coins");
+                }
+            };
 
         } else if (tkz.peek("collect")) {
             tkz.consume();
             // Execute collect method (require region)
             Expr ex = parseExpression();
+            return new State() {
+                @Override
+                public void eval(Map<String, Integer> bindings) throws Exception {
+                    System.out.println("Wait for \"Collect\" func");
+                    System.out.println("I Need Collect " + ex.eval(bindings) + " coins from this Region");
+                }
+            };
 
         }
+        return null;
     }
 
-    private void parseAttackCommand() throws Exception {
+    private State parseAttackCommand() throws Exception {
         tkz.consume("shoot");
         long d = parseDirection();
         Expr ex = parseExpression();
-        // Execute collect method (require crew)
+        // Execute shoot method (require crew)
+        return new State() {
+            @Override
+            public void eval(Map<String, Integer> bindings) throws Exception {
+                System.out.println("Wait for \"Shoot\" func");
+                System.out.println("Shoot!! @Direction ->" + d + " With Damage " + ex.eval(bindings));
+            }
+        };
     }
 
-    private void parseAssignmentStatement() throws Exception {
+    private State parseAssignmentStatement() throws Exception {
         String key = tkz.consume();
-        // identifier
-        if(!identifier.containsKey(key)){
-            identifier.put(key,0);
-        }
         if(tkz.peek("=")){
             tkz.consume();
             Expr value = parseExpression();
-            identifier.remove(key);
-            identifier.put(key, value.eval(identifier));
+            return new AssignIdentifier(key, value);
         }else{
             throw new Exception("Wrong grammar");
         }
@@ -210,8 +238,7 @@ public class PlanParser implements Parser{
             tkz.consume(")");
             return e;
         } else {
-            Expr e = parseInfoExpression();
-            return e;
+            return parseInfoExpression();
         }
     }
 
@@ -219,13 +246,16 @@ public class PlanParser implements Parser{
         if(tkz.peek("opponent")){
             tkz.consume();
             // Execute opponent method (require Crew locate)
+            return new IntLit(1); //that example not complete
         } else if (tkz.peek("nearby")) {
             tkz.consume();
             // Execute nearby method (require Crew locate)
+            long d = parseDirection();
+            return new IntLit((int) (100*d+1)); //that example not complete
         } else {
             throw new Exception("Wrong grammar");
         }
-        return null; // Careful not complete
+        // Be Careful not complete
     }
 
     /** REF : https://www.baeldung.com/java-check-string-number */
