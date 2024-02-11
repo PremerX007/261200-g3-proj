@@ -1,5 +1,8 @@
 package Parser;
 
+import Parser.Expression.*;
+import Parser.Statement.*;
+
 import Tokenizer.Tokenizer;
 import Tokenizer.LexicalError;
 import Tokenizer.SyntaxError;

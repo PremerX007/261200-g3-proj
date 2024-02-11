@@ -1,4 +1,6 @@
-package Parser;
+package Parser.Statement;
+
+import Parser.EvalError;
 
 import java.util.LinkedList;
 import java.util.Map;

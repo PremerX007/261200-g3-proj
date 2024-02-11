@@ -1,4 +1,4 @@
-package Parser;
+package Parser.Expression;
 
 import java.util.Map;
 
