@@ -15,6 +15,9 @@ public class PlanParser implements Parser{
 
     @Override
     public void parse() throws Exception {
+        if(!tkz.hasNextToken()){
+            throw new Exception("construction plans should have at least one");
+        }
         while(tkz.hasNextToken()){
             State s = parseStatement();
             s.eval(identifier);
@@ -41,23 +44,20 @@ public class PlanParser implements Parser{
         return b;
     }
 
-    private State parseIfStatement() throws Exception { // not complete
+    private State parseIfStatement() throws Exception {
         tkz.consume("if");
 
         tkz.consume("(");
-        Expr ex = parseExpression();
+        Expr expr = parseExpression();
         tkz.consume(")");
 
         tkz.consume("then");
-        State t = parseStatement();
+        State then = parseStatement();
         tkz.consume("else");
-        State e = parseStatement();
+        State els = parseStatement();
 
-        if(ex.eval(identifier) > 0){ //think should change to AST
-            return t;
-        } else {
-            return e;
-        }
+        return new ifStatement(expr,then,els);
+
     }
 
     private State parseWhileStatement() throws Exception {
@@ -68,6 +68,7 @@ public class PlanParser implements Parser{
 
         GroupState w = new WhileStatement(ex);
         w.append(parseStatement());
+
         return w;
     }
 
