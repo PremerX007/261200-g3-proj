@@ -8,8 +8,7 @@ public record BlockStatement() implements GroupState {
     private static Queue<State> q = new LinkedList<>();
     @Override
     public void eval(Map<String, Integer> bindings) throws Exception {
-        while (!q.isEmpty()){
-            State s = q.poll();
+        for(State s : q){
             s.eval(bindings);
         }
     }
