@@ -5,17 +5,18 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 
-public class ExprTokenizer implements Tokenizer{
+public class PlanTokenizer implements Tokenizer{
     private String src;
     private String next;
     private int pos;
-    public ExprTokenizer(String filename) throws Exception {
+    public PlanTokenizer(String filename) throws IOException, LexicalError {
         this.pos = 0;
         ReadConstructionPlan(filename);
+        if(this.src == null) return;
         computeNext();
     }
 
-    public void ReadConstructionPlan(String filename){
+    public void ReadConstructionPlan(String filename) throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))){
             StringBuilder str = new StringBuilder();
             String line;
@@ -26,7 +27,7 @@ public class ExprTokenizer implements Tokenizer{
             }
             this.src = str.toString();
         } catch (IOException e){
-            System.err.format("System can not manage target file : %s%n", e);
+            throw new IOException("System can not manage target file -> " + e);
         }
     }
 
@@ -46,22 +47,22 @@ public class ExprTokenizer implements Tokenizer{
         return peek().equals(s);
     }
 
-    public String consume() throws Exception {
+    public String consume() throws LexicalError {
         checkNextToken();
         String result = next;
         computeNext();
         return result;
     }
 
-    public void consume(String s) throws Exception {
+    public void consume(String s) throws SyntaxError, LexicalError {
         if(peek(s)){
             consume();
         }else{
-            throw new Exception(s + " expected");
+            throw new SyntaxError(s + " expected");
         }
     }
 
-    public void computeNext() throws Exception {
+    public void computeNext() throws LexicalError {
         StringBuilder s = new StringBuilder();
         while (pos < src.length() && Character.isWhitespace(src.charAt(pos))) {
             pos++; // ignore whitespace
@@ -91,10 +92,8 @@ public class ExprTokenizer implements Tokenizer{
             pos++;
         }
         else {
-            throw new Exception("unknown character: " + c);
+            throw new LexicalError("unknown character: " + c);
         }
         next = s.toString();
     }
-    //group 3
-    //group 4
 }

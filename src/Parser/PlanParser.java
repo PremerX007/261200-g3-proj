@@ -1,6 +1,8 @@
 package Parser;
 
 import Tokenizer.Tokenizer;
+import Tokenizer.LexicalError;
+import Tokenizer.SyntaxError;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,9 +16,9 @@ public class PlanParser implements Parser{
     }
 
     @Override
-    public void parse() throws Exception {
+    public void parse() throws EvalError, LexicalError, SyntaxError {
         if(!tkz.hasNextToken()){
-            throw new Exception("construction plans should have at least one");
+            throw new EvalError("Construction plans should have at least one");
         }
         while(tkz.hasNextToken()){
             State s = parseStatement();
@@ -24,7 +26,7 @@ public class PlanParser implements Parser{
         }
     }
 
-    private State parseStatement() throws Exception {
+    private State parseStatement() throws LexicalError, SyntaxError {
         return switch (tkz.peek()) {
             case "{"        -> parseBlockStatement();
             case "if"       -> parseIfStatement();
@@ -34,7 +36,7 @@ public class PlanParser implements Parser{
     }
 
 
-    private State parseBlockStatement() throws Exception {
+    private State parseBlockStatement() throws LexicalError, SyntaxError {
         GroupState b = new BlockStatement();
         tkz.consume("{");
         while(!tkz.peek("}")){
@@ -44,7 +46,7 @@ public class PlanParser implements Parser{
         return b;
     }
 
-    private State parseIfStatement() throws Exception {
+    private State parseIfStatement() throws LexicalError, SyntaxError {
         tkz.consume("if");
 
         tkz.consume("(");
@@ -60,7 +62,7 @@ public class PlanParser implements Parser{
 
     }
 
-    private State parseWhileStatement() throws Exception {
+    private State parseWhileStatement() throws LexicalError, SyntaxError {
         tkz.consume("while");
         tkz.consume("(");
         Expr ex = parseExpression(); // no-op not complete
@@ -72,21 +74,21 @@ public class PlanParser implements Parser{
         return w;
     }
 
-    private State parseCommand() throws Exception {
+    private State parseCommand() throws LexicalError, SyntaxError {
         return switch (tkz.peek()) {
             case "done", "relocate", "move", "invest", "collect", "shoot" -> parseActionCommand();
             default -> parseAssignmentStatement();
         };
     }
 
-    private State parseActionCommand() throws Exception {
+    private State parseActionCommand() throws LexicalError, SyntaxError {
         return switch (tkz.peek()) {
             case "done"     -> parseDoneCommand();
             case "relocate" -> parseRelocateCommand();
             case "move"     -> parseMoveCommand();
             case "invest", "collect" -> parseRegionCommand();
             case "shoot"    -> parseAttackCommand();
-            default -> throw new Exception("Wrong grammar");
+            default -> throw new SyntaxError("Wrong grammar");
         };
     }
 
@@ -94,7 +96,7 @@ public class PlanParser implements Parser{
         // Execute done method (require gameplay)
         return new State() {
             @Override
-            public void eval(Map<String, Integer> bindings) throws Exception {
+            public void eval(Map<String, Integer> bindings) {
                 System.out.println("Wait for \"done\" func");
             }
         };
@@ -104,26 +106,26 @@ public class PlanParser implements Parser{
         // Execute relocate method (require gameplay)
         return new State() {
             @Override
-            public void eval(Map<String, Integer> bindings) throws Exception {
+            public void eval(Map<String, Integer> bindings) {
                 System.out.println("Wait for \"Relocate\" func");
             }
         };
     }
 
-    private State parseMoveCommand() throws Exception {
+    private State parseMoveCommand() throws LexicalError, SyntaxError {
         tkz.consume("move");
         long d = parseDirection();
         // Execute move method (require crew)
         return new State() {
             @Override
-            public void eval(Map<String, Integer> bindings) throws Exception {
+            public void eval(Map<String, Integer> bindings) {
                 System.out.println("Wait for \"Move\" func");
                 System.out.println("Direction = " + d);
             }
         };
     }
 
-    private long parseDirection() throws Exception {
+    private long parseDirection() throws LexicalError, SyntaxError {
         return switch (tkz.consume()){
             case "up" -> 1;
             case "upright" -> 2;
@@ -131,18 +133,18 @@ public class PlanParser implements Parser{
             case "down" -> 4;
             case "downleft" -> 5;
             case "upleft" -> 6;
-            default -> throw new Exception("Direction is not correct");
+            default -> throw new SyntaxError("Direction is not correct");
         };
     }
 
-    private State parseRegionCommand() throws Exception {
+    private State parseRegionCommand() throws LexicalError, SyntaxError {
         if(tkz.peek("invest")){
             tkz.consume();
             Expr ex = parseExpression();
             // Execute invest method (require region)
             return new State() {
                 @Override
-                public void eval(Map<String, Integer> bindings) throws Exception {
+                public void eval(Map<String, Integer> bindings) throws EvalError {
                     System.out.println("Wait for \"Invest\" func");
                     System.out.println("Invest Money is " + ex.eval(bindings) + " coins");
                 }
@@ -154,7 +156,7 @@ public class PlanParser implements Parser{
             Expr ex = parseExpression();
             return new State() {
                 @Override
-                public void eval(Map<String, Integer> bindings) throws Exception {
+                public void eval(Map<String, Integer> bindings) throws EvalError {
                     System.out.println("Wait for \"Collect\" func");
                     System.out.println("I Need Collect " + ex.eval(bindings) + " coins from this Region");
                 }
@@ -164,32 +166,32 @@ public class PlanParser implements Parser{
         return null;
     }
 
-    private State parseAttackCommand() throws Exception {
+    private State parseAttackCommand() throws LexicalError, SyntaxError {
         tkz.consume("shoot");
         long d = parseDirection();
         Expr ex = parseExpression();
         // Execute shoot method (require crew)
         return new State() {
             @Override
-            public void eval(Map<String, Integer> bindings) throws Exception {
+            public void eval(Map<String, Integer> bindings) throws EvalError {
                 System.out.println("Wait for \"Shoot\" func");
                 System.out.println("Shoot!! @Direction ->" + d + " With Damage " + ex.eval(bindings));
             }
         };
     }
 
-    private State parseAssignmentStatement() throws Exception {
+    private State parseAssignmentStatement() throws LexicalError, SyntaxError {
         String key = tkz.consume();
         if(tkz.peek("=")){
             tkz.consume();
             Expr value = parseExpression();
             return new AssignIdentifier(key, value);
         }else{
-            throw new Exception("Wrong grammar");
+            throw new SyntaxError("Wrong grammar");
         }
     }
 
-    private Expr parseExpression() throws Exception {
+    private Expr parseExpression() throws LexicalError, SyntaxError {
         Expr e = parseTerm();
         while (tkz.peek("+")){
             tkz.consume();
@@ -202,7 +204,7 @@ public class PlanParser implements Parser{
         return e;
     }
 
-    private Expr parseTerm() throws Exception {
+    private Expr parseTerm() throws LexicalError, SyntaxError {
         Expr e = parseFactor();
         while (tkz.peek("*")){
             tkz.consume();
@@ -219,7 +221,7 @@ public class PlanParser implements Parser{
         return e;
     }
 
-    private Expr parseFactor() throws Exception {
+    private Expr parseFactor() throws LexicalError, SyntaxError {
         Expr p = parsePower();
         if(tkz.peek("^")){
             tkz.consume();
@@ -228,7 +230,7 @@ public class PlanParser implements Parser{
         return p;
     }
 
-    private Expr parsePower() throws Exception {
+    private Expr parsePower() throws LexicalError, SyntaxError {
         if(isNumeric(tkz.peek())){
             return new IntLit(Integer.parseInt(tkz.consume()));
         } else if(Character.isLetter(tkz.peek().charAt(0))){
@@ -243,7 +245,7 @@ public class PlanParser implements Parser{
         }
     }
 
-    private Expr parseInfoExpression() throws Exception { // Careful not complete
+    private Expr parseInfoExpression() throws LexicalError, SyntaxError { // Careful not complete
         if(tkz.peek("opponent")){
             tkz.consume();
             // Execute opponent method (require Crew locate)
@@ -254,7 +256,7 @@ public class PlanParser implements Parser{
             long d = parseDirection();
             return new IntLit((int) (100*d+1)); //that example not complete
         } else {
-            throw new Exception("Wrong grammar");
+            throw new SyntaxError("Wrong grammar");
         }
         // Be Careful not complete
     }

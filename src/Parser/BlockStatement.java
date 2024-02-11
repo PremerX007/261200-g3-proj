@@ -7,11 +7,9 @@ import java.util.Queue;
 public class BlockStatement implements GroupState {
     private Queue<State> q = new LinkedList<>();
     @Override
-    public void eval(Map<String, Integer> bindings) throws Exception {
-        if(!q.isEmpty()){
-            for(State s : q){
-                s.eval(bindings);
-            }
+    public void eval(Map<String, Integer> bindings) throws EvalError {
+        for(State s : q){
+            s.eval(bindings);
         }
     }
 

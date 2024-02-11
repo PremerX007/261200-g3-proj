@@ -12,7 +12,7 @@ public class WhileStatement implements GroupState {
     }
 
     @Override
-    public void eval(Map<String, Integer> bindings) throws Exception {
+    public void eval(Map<String, Integer> bindings) throws EvalError {
         for (int counter = 0; counter < 10000 && expr.eval(bindings) > 0; counter++){
             for(State s : q){
                 s.eval(bindings);
