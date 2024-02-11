@@ -1,0 +1,6 @@
+t = t + 1       # init time
+m = 0           # number of random moves
+while(t) {      # time still more than 1
+    t = t - 1   # decrease time
+    m = t + 1   # increase move
+}               # end while loop

@@ -1,4 +1,0 @@
-t = 1
-m = 3
-f = 4
-if (f) then m = m + 1 else m = m - 3
