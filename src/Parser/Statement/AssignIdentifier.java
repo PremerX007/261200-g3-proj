@@ -12,7 +12,11 @@ public record AssignIdentifier(String key, Expr val) implements State {
             case "rows", "cols", "currow", "curcol", "budget", "deposit", "int", "maxdeposit", "random" -> false;
             default -> true;
         };
-        if(!bindings.containsKey(key)) bindings.put(key,0);
-        if(isNotSpecial) bindings.put(key, val.eval(bindings)); //no-op
+        if(isNotSpecial){ //no-op
+            if(!bindings.containsKey(key))
+                bindings.put(key,0);
+
+            bindings.put(key, val.eval(bindings));
+        }
     }
 }
