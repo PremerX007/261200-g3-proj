@@ -21,7 +21,7 @@ public class PlanParser implements Parser{
     @Override
     public void parse() throws EvalError, LexicalError, SyntaxError {
         if(!tkz.hasNextToken()){
-            throw new EvalError("Construction plans should have at least one");
+            throw new EvalError("Construction plans should have statement at least one");
         }
         while(tkz.hasNextToken()){
             State s = parseStatement();

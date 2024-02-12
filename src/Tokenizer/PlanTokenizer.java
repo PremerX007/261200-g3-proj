@@ -12,7 +12,6 @@ public class PlanTokenizer implements Tokenizer{
     public PlanTokenizer(String filename) throws IOException, LexicalError {
         this.pos = 0;
         ReadConstructionPlan(filename);
-        if(this.src == null) return;
         computeNext();
     }
 

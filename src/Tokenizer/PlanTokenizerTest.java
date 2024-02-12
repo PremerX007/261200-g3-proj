@@ -99,8 +99,10 @@ class PlanTokenizerTest {
     }
 
     @Test
-    void whenFileEmpty() {
-        assertThrows(NoSuchElementException.class, () -> new PlanTokenizer("src/Tokenizer/TestTokenPlaintext/emptyfile.txt").checkNextToken());
+    void whenFileEmpty() throws LexicalError, IOException {
+        PlanTokenizer exr = new PlanTokenizer("src/Tokenizer/TestTokenPlaintext/emptyfile.txt");
+        assertFalse(exr.hasNextToken());
+        assertThrows(NoSuchElementException.class, exr::checkNextToken);
     }
 
     @Test
