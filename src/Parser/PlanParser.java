@@ -7,29 +7,32 @@ import Tokenizer.Tokenizer;
 import Tokenizer.LexicalError;
 import Tokenizer.SyntaxError;
 
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 
 public class PlanParser implements Parser{
     private Tokenizer tkz;
-    Map<String, Integer> identifier = new HashMap<>();
 
     public PlanParser(Tokenizer tkz){
         this.tkz = tkz;
     }
 
     @Override
-    public void parse() throws EvalError, LexicalError, SyntaxError {
-        if(!tkz.hasNextToken()){
-            throw new EvalError("Construction plans should have statement at least one");
-        }
+    public Statement parse() throws LexicalError, SyntaxError {
+        if(!tkz.hasNextToken())
+            throw new SyntaxError("Construction plans should have statement at least one");
+
+        Statement g = new GroupStatement();
         while(tkz.hasNextToken()){
-            State s = parseStatement();
-            s.eval(identifier);
+            Statement s = parseStatement();
+            g.append(s);
         }
+
+        return g;
     }
 
-    private State parseStatement() throws LexicalError, SyntaxError {
+    private Statement parseStatement() throws LexicalError, SyntaxError {
         return switch (tkz.peek()) {
             case "{"        -> parseBlockStatement();
             case "if"       -> parseIfStatement();
@@ -39,17 +42,17 @@ public class PlanParser implements Parser{
     }
 
 
-    private State parseBlockStatement() throws LexicalError, SyntaxError {
-        GroupState b = new BlockStatement();
+    private Statement parseBlockStatement() throws LexicalError, SyntaxError {
+        Statement block = new GroupStatement();
         tkz.consume("{");
         while(!tkz.peek("}")){
-            b.append(parseStatement());
+            block.append(parseStatement());
         }
         tkz.consume("}");
-        return b;
+        return block;
     }
 
-    private State parseIfStatement() throws LexicalError, SyntaxError {
+    private Statement parseIfStatement() throws LexicalError, SyntaxError {
         tkz.consume("if");
 
         tkz.consume("(");
@@ -57,34 +60,34 @@ public class PlanParser implements Parser{
         tkz.consume(")");
 
         tkz.consume("then");
-        State then = parseStatement();
+        Statement then = parseStatement();
         tkz.consume("else");
-        State els = parseStatement();
+        Statement els = parseStatement();
 
         return new ifStatement(expr,then,els);
 
     }
 
-    private State parseWhileStatement() throws LexicalError, SyntaxError {
+    private Statement parseWhileStatement() throws LexicalError, SyntaxError {
         tkz.consume("while");
         tkz.consume("(");
-        Expr ex = parseExpression(); // no-op not complete
+        Expr ex = parseExpression();
         tkz.consume(")");
 
-        GroupState w = new WhileStatement(ex);
+        Statement w = new WhileStatement(ex);
         w.append(parseStatement());
 
         return w;
     }
 
-    private State parseCommand() throws LexicalError, SyntaxError {
+    private Statement parseCommand() throws LexicalError, SyntaxError {
         return switch (tkz.peek()) {
             case "done", "relocate", "move", "invest", "collect", "shoot" -> parseActionCommand();
             default -> parseAssignmentStatement();
         };
     }
 
-    private State parseActionCommand() throws LexicalError, SyntaxError {
+    private Statement parseActionCommand() throws LexicalError, SyntaxError {
         return switch (tkz.peek()) {
             case "done"     -> parseDoneCommand();
             case "relocate" -> parseRelocateCommand();
@@ -95,9 +98,9 @@ public class PlanParser implements Parser{
         };
     }
 
-    private State parseDoneCommand() {
+    private Statement parseDoneCommand() {
         // Execute done method (require gameplay)
-        return new State() {
+        return new Statement() {
             @Override
             public void eval(Map<String, Integer> bindings) {
                 System.out.println("Wait for \"done\" func");
@@ -105,9 +108,9 @@ public class PlanParser implements Parser{
         };
     }
 
-    private State parseRelocateCommand() {
+    private Statement parseRelocateCommand() {
         // Execute relocate method (require gameplay)
-        return new State() {
+        return new Statement() {
             @Override
             public void eval(Map<String, Integer> bindings) {
                 System.out.println("Wait for \"Relocate\" func");
@@ -115,11 +118,11 @@ public class PlanParser implements Parser{
         };
     }
 
-    private State parseMoveCommand() throws LexicalError, SyntaxError {
+    private Statement parseMoveCommand() throws LexicalError, SyntaxError {
         tkz.consume("move");
         long d = parseDirection();
         // Execute move method (require crew)
-        return new State() {
+        return new Statement() {
             @Override
             public void eval(Map<String, Integer> bindings) {
                 System.out.println("Wait for \"Move\" func");
@@ -130,22 +133,22 @@ public class PlanParser implements Parser{
 
     private long parseDirection() throws LexicalError, SyntaxError {
         return switch (tkz.consume()){
-            case "up" -> 1;
-            case "upright" -> 2;
-            case "downright" -> 3;
-            case "down" -> 4;
-            case "downleft" -> 5;
-            case "upleft" -> 6;
-            default -> throw new SyntaxError("Direction is not correct");
+            case "up"           -> 1;
+            case "upright"      -> 2;
+            case "downright"    -> 3;
+            case "down"         -> 4;
+            case "downleft"     -> 5;
+            case "upleft"       -> 6;
+            default -> throw new SyntaxError("Direction is not correct, Please check your construction plans again.");
         };
     }
 
-    private State parseRegionCommand() throws LexicalError, SyntaxError {
+    private Statement parseRegionCommand() throws LexicalError, SyntaxError {
         if(tkz.peek("invest")){
             tkz.consume();
             Expr ex = parseExpression();
             // Execute invest method (require region)
-            return new State() {
+            return new Statement() {
                 @Override
                 public void eval(Map<String, Integer> bindings) throws EvalError {
                     System.out.println("Wait for \"Invest\" func");
@@ -157,7 +160,7 @@ public class PlanParser implements Parser{
             tkz.consume();
             // Execute collect method (require region)
             Expr ex = parseExpression();
-            return new State() {
+            return new Statement() {
                 @Override
                 public void eval(Map<String, Integer> bindings) throws EvalError {
                     System.out.println("Wait for \"Collect\" func");
@@ -169,12 +172,12 @@ public class PlanParser implements Parser{
         return null;
     }
 
-    private State parseAttackCommand() throws LexicalError, SyntaxError {
+    private Statement parseAttackCommand() throws LexicalError, SyntaxError {
         tkz.consume("shoot");
         long d = parseDirection();
         Expr ex = parseExpression();
         // Execute shoot method (require crew)
-        return new State() {
+        return new Statement() {
             @Override
             public void eval(Map<String, Integer> bindings) throws EvalError {
                 System.out.println("Wait for \"Shoot\" func");
@@ -183,15 +186,11 @@ public class PlanParser implements Parser{
         };
     }
 
-    private State parseAssignmentStatement() throws LexicalError, SyntaxError {
+    private Statement parseAssignmentStatement() throws LexicalError, SyntaxError {
         String key = tkz.consume();
-        if(tkz.peek("=")){
-            tkz.consume();
-            Expr value = parseExpression();
-            return new AssignIdentifier(key, value);
-        }else{
-            throw new SyntaxError("Wrong grammar");
-        }
+        tkz.consume("=");
+        Expr value = parseExpression();
+        return new AssignIdentifier(key, value);
     }
 
     private Expr parseExpression() throws LexicalError, SyntaxError {

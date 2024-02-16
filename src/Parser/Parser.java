@@ -1,8 +1,9 @@
 package Parser;
 
+import Parser.Statement.Statement;
 import Tokenizer.LexicalError;
 import Tokenizer.SyntaxError;
 
 public interface Parser {
-    void parse() throws Exception, EvalError, LexicalError, SyntaxError;
+    Statement parse() throws LexicalError, SyntaxError;
 }
