@@ -57,7 +57,7 @@ public class PlanTokenizer implements Tokenizer{
         if(peek(s)){
             consume();
         }else{
-            throw new SyntaxError(s + " expected");
+            throw new SyntaxError(s + " expected, Please check your construction plans.");
         }
     }
 

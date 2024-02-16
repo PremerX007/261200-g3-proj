@@ -1,0 +1,3 @@
+j = j + 100
+m = m-5
+k  5 * 7 + 1  # "=" symbol expected

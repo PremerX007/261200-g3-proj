@@ -5,7 +5,7 @@ import Parser.Expression.Expr;
 
 import java.util.Map;
 
-public record AssignIdentifier(String key, Expr val) implements State {
+public record AssignIdentifier(String key, Expr val) implements Statement {
     @Override
     public void eval(Map<String, Integer> bindings) throws EvalError {
         boolean isNotSpecial = switch (key) {

@@ -4,6 +4,7 @@ import Parser.EvalError;
 
 import java.util.Map;
 
-public interface State {
+public interface Statement {
     void eval(Map<String, Integer> bindings) throws EvalError;
+    default void append(Statement s) {}
 }
