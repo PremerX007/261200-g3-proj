@@ -9,7 +9,7 @@ import java.util.Queue;
 public class GroupStatement implements Statement {
     private Queue<Statement> q = new LinkedList<>();
     @Override
-    public void eval(Map<String, Integer> bindings) throws EvalError {
+    public void eval(Map<String, Long> bindings) throws EvalError {
         // when execute evaluator before run parse construction plan
         if(q.isEmpty()) throw new EvalError("There are no statement in queue, please parse your construction plan before execute evaluator");
 

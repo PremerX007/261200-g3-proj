@@ -15,7 +15,7 @@ public class WhileStatement implements Statement {
     }
 
     @Override
-    public void eval(Map<String, Integer> bindings) throws EvalError {
+    public void eval(Map<String, Long> bindings) throws EvalError {
         for (int counter = 0; counter < 10000 && expr.eval(bindings) > 0; counter++){
             for(Statement s : q){
                 s.eval(bindings);

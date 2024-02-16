@@ -16,10 +16,10 @@ class PlanParserTest {
     @Test
     void AssignSpecialVariable() throws LexicalError, IOException, SyntaxError, EvalError {
         PlanParser plan = new PlanParser(new PlanTokenizer("src/Parser/TestConstPlaintext/AssignSpecialVariable.txt"));
-        Map<String, Integer> execute = new HashMap<>();
-        Map<String, Integer> expect = new HashMap<>();
-        expect.put("a",1);
-        expect.put("b",2);
+        Map<String, Long> execute = new HashMap<>();
+        Map<String, Long> expect = new HashMap<>();
+        expect.put("a", 1L);
+        expect.put("b", 2L);
 
         Statement s = plan.parse();
         s.eval(execute);
@@ -32,11 +32,11 @@ class PlanParserTest {
         assertThrows(SyntaxError.class, plan::parse);
 
         plan = new PlanParser(new PlanTokenizer("src/Parser/TestConstPlaintext/goodAssign.txt"));
-        Map<String, Integer> execute = new HashMap<>();
-        Map<String, Integer> expect = new HashMap<>();
-        expect.put("num",12);
-        expect.put("time",4);
-        expect.put("tm",45);
+        Map<String, Long> execute = new HashMap<>();
+        Map<String, Long> expect = new HashMap<>();
+        expect.put("num", 12L);
+        expect.put("time", 4L);
+        expect.put("tm", 45L);
 
         Statement s = plan.parse();
         s.eval(execute);
