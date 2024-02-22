@@ -9,9 +9,9 @@ public class Crew {
         this.crewcity = crewcity;
     }
     public long opponent(){
-        return 0;
+        return 0; //WIP
     }
     public long nearby(){
         return 0;
-    }
+    }//WIP
 }
