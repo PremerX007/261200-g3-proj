@@ -1,4 +1,6 @@
 package Maps;
+import Player.Player;
+
 import java.util.Map;
 
 public class Region {
