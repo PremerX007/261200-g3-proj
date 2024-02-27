@@ -25,4 +25,17 @@ public class Crew {
         return this.col;
     }
 
+    protected void relocate(){
+        long distance = Territory.instance.calculateMinDistance(citycenter, new Position(row,col));
+        long cost = 5*distance+10;
+        if(president.getBudget() >= cost){
+            Territory.instance.relocateCitycenter(president, citycenter, new Position(row,col));
+            this.citycenter = new Position(row,col);
+            president.payCost(cost);
+        }else{
+            System.out.println("player does not have enough budget to relocate city center");
+        }
+        president.playerDone();
+    }
+
 }

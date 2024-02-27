@@ -43,4 +43,28 @@ public class Territory {
     }
 
 
+    public void relocateCitycenter(Player player, Position old_city, Position new_city) {
+        if (regions[new_city.i][new_city.j].getPresident().equals(player)) {
+            regions[old_city.i][old_city.j].clearCityCenter();
+            regions[new_city.i][new_city.j].setCityCenter();
+        } else {
+            System.out.println("the current region does not belong to the player, the relocation fails");
+        }
+    }
+    public long calculateMinDistance(Position old_city, Position new_city) {
+        if(old_city.j == new_city.j || Math.abs(old_city.j - new_city.j) == 1){
+            return Math.abs(old_city.i - new_city.i);
+        } else if (old_city.i == new_city.i || Math.abs(old_city.i - new_city.i) == 1) {
+            return Math.abs(old_city.j - new_city.j);
+        } else {
+            long pos_fork;
+            long block = Math.abs(old_city.j - new_city.j);
+            if(old_city.j%2==0){
+                pos_fork = old_city.i + (long) Math.floor(block/2.0);
+            }else{
+                pos_fork = old_city.i + (long) Math.ceil(block/2.0);
+            }
+            return block + Math.abs(new_city.i - pos_fork);
+        }
+    }
 }

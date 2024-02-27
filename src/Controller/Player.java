@@ -71,6 +71,9 @@ public class Player {
         this.turn_number = iden.get("t") + 1;
     }
 
+    protected void payCost(long cost){
+        this.budget = budget-cost;
+    }
 
 
 
