@@ -1,9 +1,10 @@
 package Parser.Expression;
 
+import Controller.Player;
 import Parser.EvalError;
 
 import java.util.Map;
 
 public interface Expr {
-    long eval(Map<String, Long> bindings) throws EvalError;
+    long eval(Player player, Map<String, Long> bindings) throws EvalError;
 }
