@@ -3,20 +3,27 @@ package Tokenizer;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.NoSuchElementException;
 
 public class PlanTokenizer implements Tokenizer{
     private String src;
     private String next;
     private int pos;
-    public PlanTokenizer(String filename) throws IOException, LexicalError {
+    public PlanTokenizer(FileReader fr) throws IOException, LexicalError {
         this.pos = 0;
-        ReadConstructionPlan(filename);
+        ReadConstructionPlan(new BufferedReader(fr));
         computeNext();
     }
 
-    public void ReadConstructionPlan(String filename) throws IOException {
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename))){
+    public PlanTokenizer(StringReader sr) throws IOException, LexicalError {
+        this.pos = 0;
+        ReadConstructionPlan(new BufferedReader(sr));
+        computeNext();
+    }
+
+    public void ReadConstructionPlan(BufferedReader br) throws IOException {
+        try (BufferedReader reader = br){
             StringBuilder str = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null){
@@ -57,7 +64,7 @@ public class PlanTokenizer implements Tokenizer{
         if(peek(s)){
             consume();
         }else{
-            throw new SyntaxError(s + " expected, Please check your construction plans.");
+            throw new SyntaxError(s + " expected, Please check your construction plans." + next);
         }
     }
 
