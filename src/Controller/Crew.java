@@ -38,4 +38,19 @@ public class Crew {
         president.playerDone();
     }
 
+    protected void move(int direction){
+        Position target = new Position(this.row,this.col);
+        target.nextPos(direction);
+        if(Territory.instance.checkCrewCanMove(president,target)){
+            if(president.getBudget() >= 1){
+                this.row = target.i;
+                this.col = target.j;
+                president.payCost(1);
+            } else {
+                System.out.println("player does not have enough budget to move");
+                president.playerDone();
+            }
+        }
+    }
+
 }

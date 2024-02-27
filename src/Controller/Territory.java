@@ -42,6 +42,14 @@ public class Territory {
         }
     }
 
+    public boolean checkCrewCanMove(Player player, Position pos) {
+        try {
+            if(regions[pos.i][pos.j].getPresident() == null) return true;
+            return regions[pos.i][pos.j].getPresident().equals(player);
+        }catch (ArrayIndexOutOfBoundsException | NullPointerException e){
+            return false;
+        }
+    }
 
     public void relocateCitycenter(Player player, Position old_city, Position new_city) {
         if (regions[new_city.i][new_city.j].getPresident().equals(player)) {
