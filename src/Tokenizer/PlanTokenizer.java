@@ -82,7 +82,7 @@ public class PlanTokenizer implements Tokenizer{
         }
         else if (Character.isLetter(c)) { // start of string
             s.append(c);
-            for (pos++; pos < src.length() && Character.isLetter(src.charAt(pos)); pos++){
+            for (pos++; pos < src.length() && (Character.isLetter(src.charAt(pos)) || src.charAt(pos) == '_'); pos++){
                 s.append(src.charAt(pos));
             }
         }
