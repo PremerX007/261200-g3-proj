@@ -2,6 +2,7 @@ package Parser.Statement;
 
 import Parser.EvalError;
 import Parser.Expression.Expr;
+import Controller.Player;
 
 import java.util.LinkedList;
 import java.util.Map;
@@ -15,10 +16,12 @@ public class WhileStatement implements Statement {
     }
 
     @Override
-    public void eval(Map<String, Long> bindings) throws EvalError {
-        for (int counter = 0; counter < 10000 && expr.eval(bindings) > 0; counter++){
+    public void eval(Player player, Map<String, Long> bindings) throws EvalError {
+        for (int counter = 0; counter < 10000 && expr.eval(player, bindings) > 0; counter++){
             for(Statement s : q){
-                s.eval(bindings);
+                if(player.isDone()) return;
+                s.eval(player, bindings);
+                if(player.isDone()) return;
             }
         }
     }
