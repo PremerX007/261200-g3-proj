@@ -4,13 +4,13 @@ import Parser.EvalError;
 import Parser.Expression.Expr;
 import Controller.Player;
 
-import java.util.LinkedList;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
-import java.util.Queue;
 
 public class WhileStatement implements Statement {
     private Expr expr;
-    private Queue<Statement> q = new LinkedList<>();
+    private List<Statement> q = new ArrayList<>();
     public WhileStatement(Expr expr){
         this.expr = expr;
     }
@@ -25,7 +25,6 @@ public class WhileStatement implements Statement {
             }
         }
     }
-
     @Override
     public void append(Statement s){
         q.add(s);

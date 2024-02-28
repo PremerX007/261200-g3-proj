@@ -3,12 +3,12 @@ package Parser.Statement;
 import Parser.EvalError;
 import Controller.Player;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 
 public class GroupStatement implements Statement {
-    private Queue<Statement> q = new LinkedList<>();
+    private List<Statement> q = new ArrayList<>();
     @Override
     public void eval(Player player, Map<String, Long> bindings) throws EvalError {
         // when execute evaluator before run parse construction plan
