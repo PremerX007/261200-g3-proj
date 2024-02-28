@@ -59,6 +59,27 @@ public class Territory {
             System.out.println("the current region does not belong to the player, the relocation fails");
         }
     }
+
+    public void investRegions(Player player, Position pos, long money){  // ฺNot Completed
+        if(canInvest(player,pos)){
+            if(money <= max_dep){
+                regions[pos.i][pos.j].investRegion(player, money);
+                player.payCost(money);
+            }else{
+                regions[pos.i][pos.j].investRegion(player, max_dep);
+                player.payCost(max_dep);
+            }
+        }
+    }
+
+    public void collectBudget(Player player, Position pos, long money){ // Not Completed
+        Region region = regions[pos.i][pos.j];
+        if(region.getDeposit() >= money){
+            region.payBudget(money);
+            player.addBudget(money);
+        }
+    }
+
     public long calculateMinDistance(Position old_city, Position new_city) {
         if(old_city.j == new_city.j || Math.abs(old_city.j - new_city.j) == 1){
             return Math.abs(old_city.i - new_city.i);

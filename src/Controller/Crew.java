@@ -38,6 +38,22 @@ public class Crew {
         president.playerDone();
     }
 
+    protected void invest(long money){
+        if(president.getBudget() >= money+1){
+            Territory.instance.investRegions(president, new Position(row,col), money);
+        }
+        president.payCost(1);
+    }
+
+    protected void collect(long money){
+        if(president.getBudget() >= 1){
+            Territory.instance.collectBudget(president, new Position(row,col), money);
+            president.payCost(1);
+        }else{
+            president.playerDone();
+        }
+    }
+
     protected void move(int direction){
         Position target = new Position(this.row,this.col);
         target.nextPos(direction);
