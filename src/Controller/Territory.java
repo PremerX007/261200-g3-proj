@@ -42,6 +42,57 @@ public class Territory {
         }
     }
 
+    public long getBaseInterest() {
+        return this.base_interest;
+    }
+
+    public long getMaxDeposit(){
+        return this.max_dep;
+    }
+
+    public long getRegionInterest(Position pos) {
+        return regions[pos.i][pos.j].getInterest();
+    }
+
+    private boolean canInvest(Player player, Position pos){
+        if(regions[pos.i][pos.j].getPresident() == null) {
+            int[] row = {(pos.i - 1),
+                    (pos.j % 2 == 0 ? pos.i - 1 : pos.i),
+                    (pos.j % 2 == 0 ? pos.i : pos.i + 1),
+                    (pos.i + 1),
+                    (pos.j % 2 == 0 ? pos.i : pos.i + 1),
+                    (pos.j % 2 == 0 ? pos.i - 1 : pos.i)};
+            int[] col = {pos.j, pos.j + 1, pos.j + 1, pos.j, pos.j - 1, pos.j - 1};
+
+            for (int i = 0; i < 6; i++) {
+                try {
+                    if (regions[row[i]][col[i]].getPresident().equals(player)) {
+                        return true;
+                    }
+                } catch (ArrayIndexOutOfBoundsException | NullPointerException e) {
+                    continue;
+                }
+            }
+            return false;
+        }else if(regions[pos.i][pos.j].getPresident().equals(player)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public long getRow(){
+        return this.row;
+    }
+    public long getCol(){
+        return this.col;
+    }
+
+    public void setStartRegions(Player player, Position pos, long init_dep){
+        Region reg = regions[pos.i][pos.j];
+        reg.initCityCenter(player, init_dep);
+    }
+
     public boolean checkCrewCanMove(Player player, Position pos) {
         try {
             if(regions[pos.i][pos.j].getPresident() == null) return true;
@@ -49,6 +100,13 @@ public class Territory {
         }catch (ArrayIndexOutOfBoundsException | NullPointerException e){
             return false;
         }
+    }
+
+    public long checkDeposit(Player player, Position pos){
+        Region reg = regions[pos.i][pos.j];
+        if (reg.getPresident() == null) return -reg.getDeposit();
+        else if (!reg.getPresident().equals(player)) return -reg.getDeposit();
+        else return reg.getDeposit();
     }
 
     public void relocateCitycenter(Player player, Position old_city, Position new_city) {
@@ -163,4 +221,9 @@ public class Territory {
         }
     }
 
+    public void clearRegion(List<Position> city) {
+        for(Position pos : city){
+            regions[pos.i][pos.j].clearPresidentLose();
+        }
+    }
 }

@@ -19,7 +19,7 @@ import java.util.*;
 public class Game {
     public static void main(String[] args) throws LexicalError, SyntaxError, EvalError, IOException {
         Game game = new Game();
-
+        game.start();
     }
 
     private final Map<String, Long> config = new HashMap<>();
@@ -69,6 +69,31 @@ public class Game {
         }
     }
 
+    public void start() throws LexicalError, SyntaxError, IOException, EvalError {
+        this.territory = Territory.instance(row, col, max_dep, interest_pct);
+        // sandbox test
+        playerList.add(createPlayer("Alex"));
+        playerList.add(createPlayer("Bob"));
 
+        while(true){
+            for(Player player : playerList){
+                if(!player.status()) return; // if player lose
+                player.run();
+            }
+        }
+    }
+
+    private Player createPlayer(String name) throws LexicalError, SyntaxError, IOException {
+        Position pos = randomPos();
+        Player p = new Player(name, pos, init_budget);
+        this.territory.setStartRegions(p,pos,init_center_dep);
+        return p;
+    }
+
+    private Position randomPos(){
+        int i = (int) ((Math.random() * (row - 1)) + 1);
+        int j = (int) ((Math.random() * (col - 1)) + 1);
+        return new Position(i,j);
+    }
 
 }

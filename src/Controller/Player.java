@@ -71,12 +71,38 @@ public class Player {
     public void run() throws EvalError, LexicalError, IOException, SyntaxError {
         initCost();
         this.done = false;
+        calculateMyRegionInterest();
         statement.eval(this,iden);
         this.turn_number = iden.get("t") + 1;
     }
 
+    private void calculateMyRegionInterest() {
+        for(Position pos : ownCity){
+            Territory.instance.calculateRegionInterest(pos);
+        }
+    }
+
+    protected long getPlayerTurn(){
+        return this.turn_number;
+    }
+
     protected void payCost(long cost){
         this.budget = budget-cost;
+    }
+    protected void addBudget(long money){
+        this.budget = budget+money;
+    }
+
+    protected void addNewRegion(Position pos) {
+        ownCity.add(pos);
+    }
+    protected void deleteRegion(Position pos){
+        for(Position p : this.ownCity){
+            if(pos.i == p.i && pos.j == p.j){
+                ownCity.remove(p);
+                break;
+            }
+        }
     }
 
 

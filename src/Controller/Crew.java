@@ -25,6 +25,10 @@ public class Crew {
         return this.col;
     }
 
+    protected long getNowDeposit(){
+        return Territory.instance.checkDeposit(president, new Position(row, col));
+    }
+
     protected void relocate(){
         long distance = Territory.instance.calculateMinDistance(citycenter, new Position(row,col));
         long cost = 5*distance+10;

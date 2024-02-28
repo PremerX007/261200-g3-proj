@@ -22,11 +22,39 @@ public class Region {
         deposit = init_dep;
     }
 
+    private void caculateInterest(long t){
+        long b = Territory.instance.getBaseInterest();
+        this.interest = b*Math.log10(deposit)*Math.log(t);
+    }
+
+    protected long getInterest(){ // not clear
+        caculateInterest(president.getPlayerTurn());
+        return (long) this.interest;
+    }
+
+    protected void calculateDeposit(){
+        caculateInterest(president.getPlayerTurn());
+        this.deposit = (deposit + (deposit*interest/100));
+    }
 
     protected long getDeposit(){
         return (long) this.deposit;
     }
+
+    protected Position getPosition(){
+        return new Position(row, col);
+    }
+
     protected Player getPresident() { return this.president; }
+
+    protected void clearPresidentLose(){
+        this.president = null;
+    }
+
+    private void clearPresident() {
+        this.president.deleteRegion(new Position(row, col));
+        this.president = null;
+    }
     protected void payBudget(long money){
         if((long) deposit == money) {
             this.deposit = 0;
@@ -34,6 +62,22 @@ public class Region {
         }else{
             this.deposit = deposit - money;
         }
+    }
+
+    protected void clearCityCenter(){
+        this.cityCenter = false;
+    }
+
+    protected void setCityCenter(){
+        this.cityCenter = true;
+    }
+
+    protected void investRegion(Player player, long money){
+        if(president == null) {
+            this.president = player;
+            player.addNewRegion(new Position(row,col));
+        }
+        this.deposit = deposit + money;
     }
 
     protected boolean isCityCenter() {
