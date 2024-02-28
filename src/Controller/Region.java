@@ -23,6 +23,18 @@ public class Region {
     }
 
 
+    protected long getDeposit(){
+        return (long) this.deposit;
+    }
+    protected Player getPresident() { return this.president; }
+    protected void payBudget(long money){
+        if((long) deposit == money) {
+            this.deposit = 0;
+            clearPresident();
+        }else{
+            this.deposit = deposit - money;
+        }
+    }
 
     protected boolean isCityCenter() {
         return cityCenter;

@@ -40,6 +40,10 @@ public class Player {
         return this.status;
     }
 
+    protected void playerLose(){
+        this.status = false;
+        Territory.instance.clearRegion(ownCity);
+    }
     private void initCost() throws LexicalError, IOException, SyntaxError {
         // time for user to change or not change construction plan
         this.tkz = new PlanTokenizer(new FileReader("src/Parser/TestConstPlaintext/sampleCons.txt"));

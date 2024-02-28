@@ -69,4 +69,11 @@ public class Crew {
         }
     }
 
+    protected void shoot(int direction, long attack_money){
+        if(president.getBudget() >= attack_money+1){
+            Position target = new Position(row,col);
+            target.nextPos(direction);
+            Territory.instance.shootRegion(president, target, attack_money);
+        }
+    }
 }

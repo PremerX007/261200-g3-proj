@@ -96,4 +96,21 @@ public class Territory {
             return block + Math.abs(new_city.i - pos_fork);
         }
     }
+    public void shootRegion(Player player, Position targetPos, long attackMoney) {
+        try {
+            Region target = regions[targetPos.i][targetPos.j];
+            if(target.getPresident() != null){
+                player.payCost(attackMoney);
+                target.payBudget(attackMoney);
+                if(target.isCityCenter() && target.getDeposit() == 0){
+                    player.playerLose();
+                    player.playerDone();
+                }
+            }
+            player.payCost(1);
+        } catch (ArrayIndexOutOfBoundsException | NullPointerException e){
+            player.payCost(1);
+        }
+    }
+
 }
