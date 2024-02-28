@@ -21,7 +21,7 @@ public class PlanParser implements Parser{
         if(!tkz.hasNextToken())
             throw new SyntaxError("Construction plans should have statement at least one");
 
-        Statement g = new GroupStatement();
+        Statement g = new BlockStatement();
         while(tkz.hasNextToken()){
             Statement s = parseStatement();
             g.append(s);
