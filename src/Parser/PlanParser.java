@@ -2,17 +2,17 @@ package Parser;
 
 import Parser.Expression.*;
 import Parser.Statement.*;
+import Controller.*;
 
 import Tokenizer.Tokenizer;
 import Tokenizer.LexicalError;
 import Tokenizer.SyntaxError;
-
-import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 
 public class PlanParser implements Parser{
     private Tokenizer tkz;
 
-    public PlanParser(Tokenizer tkz){
+    public PlanParser(@NotNull Tokenizer tkz){
         this.tkz = tkz;
     }
 
@@ -41,7 +41,7 @@ public class PlanParser implements Parser{
 
 
     private Statement parseBlockStatement() throws LexicalError, SyntaxError {
-        Statement block = new GroupStatement();
+        Statement block = new BlockStatement();
         tkz.consume("{");
         while(!tkz.peek("}")){
             block.append(parseStatement());
@@ -62,7 +62,7 @@ public class PlanParser implements Parser{
         tkz.consume("else");
         Statement els = parseStatement();
 
-        return new ifStatement(expr,then,els);
+        return new IfStatement(expr,then,els);
 
     }
 
@@ -97,44 +97,31 @@ public class PlanParser implements Parser{
             case "move"                 -> parseMoveCommand();
             case "invest", "collect"    -> parseRegionCommand();
             case "shoot"                -> parseAttackCommand();
-            default -> throw new SyntaxError("Wrong grammar");
+            default -> throw new SyntaxError("");
         };
     }
 
-    private Statement parseDoneCommand() {
+    private Statement parseDoneCommand() throws LexicalError, SyntaxError {
+        tkz.consume("done");
         // Execute done method (require gameplay)
-        return new Statement() {
-            @Override
-            public void eval(Map<String, Long> bindings) {
-                System.out.println("Wait for \"done\" func");
-            }
-        };
+        return new DoneCommand();
     }
 
-    private Statement parseRelocateCommand() {
+    private Statement parseRelocateCommand() throws LexicalError, SyntaxError {
+        tkz.consume("relocate");
         // Execute relocate method (require gameplay)
-        return new Statement() {
-            @Override
-            public void eval(Map<String, Long> bindings) {
-                System.out.println("Wait for \"Relocate\" func");
-            }
-        };
+        return new RelocateCommand();
     }
 
     private Statement parseMoveCommand() throws LexicalError, SyntaxError {
         tkz.consume("move");
-        long d = parseDirection();
+        int direction = parseDirection();
         // Execute move method (require crew)
-        return new Statement() {
-            @Override
-            public void eval(Map<String, Long> bindings) {
-                System.out.println("Wait for \"Move\" func");
-                System.out.println("Direction = " + d);
-            }
-        };
+        return new MoveCommand(direction);
     }
 
-    private long parseDirection() throws LexicalError, SyntaxError {
+    private int parseDirection() throws LexicalError, SyntaxError {
+        String dir = tkz.peek();
         return switch (tkz.consume()){
             case "up"           -> 1;
             case "upright"      -> 2;
@@ -142,7 +129,7 @@ public class PlanParser implements Parser{
             case "down"         -> 4;
             case "downleft"     -> 5;
             case "upleft"       -> 6;
-            default -> throw new SyntaxError("Direction is not correct, Please check your construction plans again.");
+            default -> throw new SyntaxError("Direction is not correct " + "(" + dir + ")" + ", Please check your construction plans again." );
         };
     }
 
@@ -151,25 +138,13 @@ public class PlanParser implements Parser{
             tkz.consume();
             Expr ex = parseExpression();
             // Execute invest method (require region)
-            return new Statement() {
-                @Override
-                public void eval(Map<String, Long> bindings) throws EvalError {
-                    System.out.println("Wait for \"Invest\" func");
-                    System.out.println("Invest Money is " + ex.eval(bindings) + " coins");
-                }
-            };
+            return new InvestCommand(ex);
 
         } else if (tkz.peek("collect")) {
             tkz.consume();
             // Execute collect method (require region)
             Expr ex = parseExpression();
-            return new Statement() {
-                @Override
-                public void eval(Map<String, Long> bindings) throws EvalError {
-                    System.out.println("Wait for \"Collect\" func");
-                    System.out.println("I Need Collect " + ex.eval(bindings) + " coins from this Region");
-                }
-            };
+            return new CollectCommand(ex);
 
         }
         return null;
@@ -177,16 +152,10 @@ public class PlanParser implements Parser{
 
     private Statement parseAttackCommand() throws LexicalError, SyntaxError {
         tkz.consume("shoot");
-        long d = parseDirection();
+        int d = parseDirection();
         Expr ex = parseExpression();
         // Execute shoot method (require crew)
-        return new Statement() {
-            @Override
-            public void eval(Map<String, Long> bindings) throws EvalError {
-                System.out.println("Wait for \"Shoot\" func");
-                System.out.println("Shoot!! @Direction ->" + d + " With Damage " + ex.eval(bindings));
-            }
-        };
+        return new ShootCommand(d, ex);
     }
 
     private Statement parseAssignmentStatement() throws LexicalError, SyntaxError {
@@ -238,32 +207,33 @@ public class PlanParser implements Parser{
     private Expr parsePower() throws LexicalError, SyntaxError {
         if(isNumeric(tkz.peek())){
             return new LongLit(Long.parseLong(tkz.consume()));
-        } else if(Character.isLetter(tkz.peek().charAt(0))){
-            return new Variable(tkz.consume());
+        } else if(tkz.peek("opponent") || tkz.peek("nearby")){
+            return parseInfoExpression();
         } else if(tkz.peek("(")) {
             tkz.consume("(");
             Expr e = parseExpression();
             tkz.consume(")");
             return e;
         } else {
-            return parseInfoExpression();
+            return new Variable(tkz.consume());
         }
+
+        //else if(Character.isLetter(tkz.peek().charAt(0)))
     }
 
     private Expr parseInfoExpression() throws LexicalError, SyntaxError { // Careful not complete
         if(tkz.peek("opponent")){
             tkz.consume();
             // Execute opponent method (require Crew locate)
-            return new LongLit(1); //that example not complete
+            return new Opponent();
         } else if (tkz.peek("nearby")) {
             tkz.consume();
+            int d = parseDirection();
             // Execute nearby method (require Crew locate)
-            long d = parseDirection();
-            return new LongLit((int) (100*d+1)); //that example not complete
+            return new Nearby(d); //that example not complete
         } else {
             throw new SyntaxError("Wrong grammar");
         }
-        // Be Careful not complete
     }
 
     /** REF : https://www.baeldung.com/java-check-string-number */
