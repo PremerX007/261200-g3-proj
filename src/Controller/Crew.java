@@ -69,6 +69,18 @@ public class Crew {
         }
     }
 
+    protected long opponentCheck(){
+        return Territory.instance.opponentCheck(president, new Position(row, col));
+    }
+
+    protected long getInterest() {
+        return Territory.instance.getRegionInterest(new Position(row, col));
+    }
+
+    protected long nearbyCheck(int distance) {
+        return Territory.instance.nearbyCheck(president, new Position(row, col), distance);
+    }
+
     protected void shoot(int direction, long attack_money){
         if(president.getBudget() >= attack_money+1){
             Position target = new Position(row,col);

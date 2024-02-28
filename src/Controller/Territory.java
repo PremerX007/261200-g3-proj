@@ -96,6 +96,56 @@ public class Territory {
             return block + Math.abs(new_city.i - pos_fork);
         }
     }
+
+    public void calculateRegionInterest(Position pos) {
+        regions[pos.i][pos.j].calculateDeposit();
+    }
+
+    public long opponentCheck(Player player, Position pos){
+        int bestPos = Integer.MAX_VALUE;
+
+        for(int i=1; i<=6; i++){
+            Position p = new Position(pos.i, pos.j);
+            for (int counter = 1; counter < 10000; counter++){ // protect infinite loop
+                p.nextPos(i);
+                try {
+                    Region target = regions[p.i][p.j];
+                    if(target.getPresident() != null){
+                        int targetPos = Integer.parseInt(Integer.toString(counter)+ i);
+                        if(!target.getPresident().equals(player) && targetPos < bestPos) {
+                            bestPos = targetPos;
+                            break;
+                        }
+                    }
+                }catch (ArrayIndexOutOfBoundsException | NullPointerException e){
+                    break;
+                }
+            }
+        }
+
+        return (bestPos != Integer.MAX_VALUE ? bestPos : 0);
+    }
+
+    public long nearbyCheck(Player player, Position pos, int distance) {
+        int result = 0;
+        for (int counter = 1; counter < 10000; counter++){ // protect infinite loop
+            pos.nextPos(distance);
+            try {
+                Region target = regions[pos.i][pos.j];
+                if(target.getPresident() != null){
+                    if(!target.getPresident().equals(player)) {
+                        result = 100*counter+((int) Math.log10(target.getDeposit())+1);
+                        break;
+                    }
+                }
+            }catch (ArrayIndexOutOfBoundsException | NullPointerException e){
+                break;
+            }
+        }
+
+        return result;
+    }
+
     public void shootRegion(Player player, Position targetPos, long attackMoney) {
         try {
             Region target = regions[targetPos.i][targetPos.j];
