@@ -9,6 +9,10 @@ public class Position {
         this.j = j;
     }
 
+    public Position(Position p){
+        this(p.i, p.j);
+    }
+
     public void nextPos(int direction){
         switch (direction){
             case 1 -> i--;

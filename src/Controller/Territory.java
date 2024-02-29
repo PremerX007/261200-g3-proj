@@ -2,8 +2,6 @@ package Controller;
 
 import UPBEAT.Position;
 
-import java.util.List;
-
 public class Territory {
 
     public static void main(String[] args) {
@@ -56,17 +54,11 @@ public class Territory {
 
     private boolean canInvest(Player player, Position pos){
         if(regions[pos.i][pos.j].getPresident() == null) {
-            int[] row = {(pos.i - 1),
-                    (pos.j % 2 == 0 ? pos.i - 1 : pos.i),
-                    (pos.j % 2 == 0 ? pos.i : pos.i + 1),
-                    (pos.i + 1),
-                    (pos.j % 2 == 0 ? pos.i : pos.i + 1),
-                    (pos.j % 2 == 0 ? pos.i - 1 : pos.i)};
-            int[] col = {pos.j, pos.j + 1, pos.j + 1, pos.j, pos.j - 1, pos.j - 1};
-
-            for (int i = 0; i < 6; i++) {
+            for (int i = 1; i <= 6; i++) {
+                Position tp = new Position(pos);
+                tp.nextPos(i);
                 try {
-                    if (regions[row[i]][col[i]].getPresident().equals(player)) {
+                    if (regions[tp.i][tp.j].getPresident().equals(player)) {
                         return true;
                     }
                 } catch (ArrayIndexOutOfBoundsException | NullPointerException e) {
@@ -74,11 +66,13 @@ public class Territory {
                 }
             }
             return false;
-        }else if(regions[pos.i][pos.j].getPresident().equals(player)){
-            return true;
         }else{
-            return false;
+            return true;
         }
+
+//        else if(regions[pos.i][pos.j].getPresident().equals(player)){
+//            return true;
+//        }
     }
 
     public long getRow(){
@@ -88,9 +82,10 @@ public class Territory {
         return this.col;
     }
 
-    public void setStartRegions(Player player, Position pos, long init_dep){
+    public void setStartPlayer(Player player, Position pos, long init_dep){
         Region reg = regions[pos.i][pos.j];
         reg.initCityCenter(player, init_dep);
+        player.addNewRegion(reg);
     }
 
     public boolean checkCrewCanMove(Player player, Position pos) {
@@ -105,7 +100,6 @@ public class Territory {
     public long checkDeposit(Player player, Position pos){
         Region reg = regions[pos.i][pos.j];
         if (reg.getPresident() == null) return -reg.getDeposit();
-        else if (!reg.getPresident().equals(player)) return -reg.getDeposit();
         else return reg.getDeposit();
     }
 
@@ -113,6 +107,7 @@ public class Territory {
         if (regions[new_city.i][new_city.j].getPresident().equals(player)) {
             regions[old_city.i][old_city.j].clearCityCenter();
             regions[new_city.i][new_city.j].setCityCenter();
+            player.getCrew().assignNewCityCenter(new_city);
         } else {
             System.out.println("the current region does not belong to the player, the relocation fails");
         }
@@ -133,7 +128,7 @@ public class Territory {
     public void collectBudget(Player player, Position pos, long money){ // Not Completed
         Region region = regions[pos.i][pos.j];
         if(region.getDeposit() >= money){
-            region.payBudget(money);
+            region.payDeposit(money);
             player.addBudget(money);
         }
     }
@@ -208,22 +203,17 @@ public class Territory {
         try {
             Region target = regions[targetPos.i][targetPos.j];
             if(target.getPresident() != null){
-                player.payCost(attackMoney);
-                target.payBudget(attackMoney);
-                if(target.isCityCenter() && target.getDeposit() == 0){
-                    player.playerLose();
-                    player.playerDone();
-                }
+                player.payCost(attackMoney+1);
+                target.payDepositFromShoot(player,attackMoney);
+            }else{
+                player.payCost(attackMoney+1);
             }
-            player.payCost(1);
-        } catch (ArrayIndexOutOfBoundsException | NullPointerException e){
-            player.payCost(1);
+        } catch (ArrayIndexOutOfBoundsException e){
+            player.payCost(attackMoney+1);
         }
     }
 
-    public void clearRegion(List<Position> city) {
-        for(Position pos : city){
-            regions[pos.i][pos.j].clearPresidentLose();
-        }
+    protected void addPlayerRegion(Player player, Position pos) {
+        regions[pos.i][pos.j].assignPresident(player);
     }
 }

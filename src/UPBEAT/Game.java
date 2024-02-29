@@ -85,9 +85,7 @@ public class Game {
 
     private Player createPlayer(String name) throws LexicalError, SyntaxError, IOException {
         Position pos = randomPos();
-        Player p = new Player(name, pos, init_budget);
-        this.territory.setStartRegions(p,pos,init_center_dep);
-        return p;
+        return new Player(name, pos, init_budget, init_center_dep);
     }
 
     private Position randomPos(){

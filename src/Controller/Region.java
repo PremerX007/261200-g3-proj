@@ -7,7 +7,6 @@ public class Region {
     private int col;
     private Player president;
     private double deposit;
-    private double max_deposit;
     private double interest;
     private boolean cityCenter;
 
@@ -52,10 +51,22 @@ public class Region {
     }
 
     private void clearPresident() {
-        this.president.deleteRegion(new Position(row, col));
+        this.president.deleteRegion(this);
         this.president = null;
     }
-    protected void payBudget(long money){
+
+    protected void payDepositFromShoot(Player player, long cost){
+        this.deposit = Math.max(0, deposit - cost);
+        if(deposit < 1){
+            if(cityCenter){
+                president.playerLose();
+            }else{
+                clearPresident();
+            }
+        }
+    }
+
+    protected void payDeposit(long money){
         if((long) deposit == money) {
             this.deposit = 0;
             clearPresident();
@@ -75,12 +86,13 @@ public class Region {
     protected void investRegion(Player player, long money){
         if(president == null) {
             this.president = player;
-            player.addNewRegion(new Position(row,col));
+            player.addNewRegion(this);
         }
         this.deposit = deposit + money;
     }
 
-    protected boolean isCityCenter() {
-        return cityCenter;
+    protected void assignPresident(Player player) {
+        this.president = player;
+        player.addNewRegion(this);
     }
 }

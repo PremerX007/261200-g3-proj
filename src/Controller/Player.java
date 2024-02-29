@@ -11,15 +11,16 @@ import UPBEAT.Position;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Player {
-    private List<Position> ownCity = new ArrayList<>();
+    private List<Region> ownCity = new ArrayList<>();
     private Map<String, Long> iden = new HashMap<>();
-    private long budget;
+    private BigDecimal budget;
     private Tokenizer tkz;
     private Statement statement;
     private boolean done;
@@ -28,12 +29,11 @@ public class Player {
     private String name;
     private long turn_number = 1;
 
-    public Player(String name, Position init_pos, long init_budget) throws LexicalError, IOException, SyntaxError {
+    public Player(String name, Position init_pos, long init_budget, long init_center_dep) throws LexicalError, IOException, SyntaxError {
         this.name = name;
         this.crew = new Crew(this,init_pos);
-        this.budget = init_budget;
-        ownCity.add(init_pos);
-
+        this.budget = new BigDecimal(init_budget);
+        Territory.instance.setStartPlayer(this,init_pos,init_center_dep);
     }
 
     public boolean status() {
@@ -42,7 +42,9 @@ public class Player {
 
     protected void playerLose(){
         this.status = false;
-        Territory.instance.clearRegion(ownCity);
+        for (Region reg : ownCity){
+            reg.clearPresidentLose();
+        }
     }
     private void initCost() throws LexicalError, IOException, SyntaxError {
         // time for user to change or not change construction plan
@@ -61,7 +63,7 @@ public class Player {
     }
 
     protected long getBudget(){
-        return this.budget;
+        return this.budget.longValue();
     }
 
     public boolean isDone(){
@@ -73,12 +75,13 @@ public class Player {
         this.done = false;
         calculateMyRegionInterest();
         statement.eval(this,iden);
+        crew.backHome();
         this.turn_number = iden.get("t") + 1;
     }
 
     private void calculateMyRegionInterest() {
-        for(Position pos : ownCity){
-            Territory.instance.calculateRegionInterest(pos);
+        for(Region reg : ownCity){
+            reg.calculateDeposit();
         }
     }
 
@@ -87,22 +90,17 @@ public class Player {
     }
 
     protected void payCost(long cost){
-        this.budget = budget-cost;
+        this.budget = budget.subtract(new BigDecimal(cost));
     }
     protected void addBudget(long money){
-        this.budget = budget+money;
+        this.budget = budget.add(new BigDecimal(money));
     }
 
-    protected void addNewRegion(Position pos) {
-        ownCity.add(pos);
+    protected void addNewRegion(Region reg) {
+        ownCity.add(reg);
     }
-    protected void deleteRegion(Position pos){
-        for(Position p : this.ownCity){
-            if(pos.i == p.i && pos.j == p.j){
-                ownCity.remove(p);
-                break;
-            }
-        }
+    protected void deleteRegion(Region reg){
+        ownCity.remove(reg);
     }
 
 

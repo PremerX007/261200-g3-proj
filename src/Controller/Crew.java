@@ -29,13 +29,21 @@ public class Crew {
         return Territory.instance.checkDeposit(president, new Position(row, col));
     }
 
+    protected void assignNewCityCenter(Position pos){
+        this.citycenter = pos;
+    }
+
+    protected void backHome(){
+        this.row = citycenter.i;
+        this.col = citycenter.j;
+    }
+
     protected void relocate(){
         long distance = Territory.instance.calculateMinDistance(citycenter, new Position(row,col));
         long cost = 5*distance+10;
         if(president.getBudget() >= cost){
-            Territory.instance.relocateCitycenter(president, citycenter, new Position(row,col));
-            this.citycenter = new Position(row,col);
             president.payCost(cost);
+            Territory.instance.relocateCitycenter(president, citycenter, new Position(row,col));
         }else{
             System.out.println("player does not have enough budget to relocate city center");
         }
@@ -51,8 +59,8 @@ public class Crew {
 
     protected void collect(long money){
         if(president.getBudget() >= 1){
-            Territory.instance.collectBudget(president, new Position(row,col), money);
             president.payCost(1);
+            Territory.instance.collectBudget(president, new Position(row,col), money);
         }else{
             president.playerDone();
         }
