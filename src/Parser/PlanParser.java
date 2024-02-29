@@ -2,8 +2,8 @@ package Parser;
 
 import Parser.Expression.*;
 import Parser.Statement.*;
-import Controller.*;
 
+import Controller.*;
 import Tokenizer.Tokenizer;
 import Tokenizer.LexicalError;
 import Tokenizer.SyntaxError;
@@ -81,11 +81,11 @@ public class PlanParser implements Parser{
     private Statement parseCommand() throws LexicalError, SyntaxError {
         return switch (tkz.peek()) {
             case "done",
-                 "relocate",
-                 "move",
-                 "invest",
-                 "collect",
-                 "shoot"  -> parseActionCommand();
+                    "relocate",
+                    "move",
+                    "invest",
+                    "collect",
+                    "shoot"  -> parseActionCommand();
             default -> parseAssignmentStatement();
         };
     }
