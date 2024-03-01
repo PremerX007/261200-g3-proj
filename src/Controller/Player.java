@@ -11,7 +11,6 @@ import UPBEAT.Position;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +19,7 @@ import java.util.Map;
 public class Player {
     private List<Region> ownCity = new ArrayList<>();
     private Map<String, Long> iden = new HashMap<>();
-    private BigDecimal budget;
+    private long budget;
     private Tokenizer tkz;
     private Statement statement;
     private boolean done;
@@ -29,11 +28,11 @@ public class Player {
     private String name;
     private long turn_number = 1;
 
-    public Player(String name, Position init_pos, long init_budget, long init_center_dep) throws LexicalError, IOException, SyntaxError {
+    public Player(String name, Position init_pos, long init_budget) throws LexicalError, IOException, SyntaxError {
         this.name = name;
         this.crew = new Crew(this,init_pos);
-        this.budget = new BigDecimal(init_budget);
-        Territory.instance.setStartPlayer(this,init_pos,init_center_dep);
+        this.budget = init_budget;
+
     }
 
     public boolean status() {
@@ -63,7 +62,7 @@ public class Player {
     }
 
     protected long getBudget(){
-        return this.budget.longValue();
+        return this.budget;
     }
 
     public boolean isDone(){
@@ -75,7 +74,7 @@ public class Player {
         this.done = false;
         calculateMyRegionInterest();
         statement.eval(this,iden);
-        crew.backHome();
+        crew.goBackCityCenter();
         this.turn_number = iden.get("t") + 1;
     }
 
@@ -90,10 +89,10 @@ public class Player {
     }
 
     protected void payCost(long cost){
-        this.budget = budget.subtract(new BigDecimal(cost));
+        this.budget = budget-cost;
     }
     protected void addBudget(long money){
-        this.budget = budget.add(new BigDecimal(money));
+        this.budget = budget+money;
     }
 
     protected void addNewRegion(Region reg) {

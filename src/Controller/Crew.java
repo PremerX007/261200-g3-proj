@@ -2,8 +2,6 @@ package Controller;
 
 import UPBEAT.Position;
 
-import java.util.Map;
-
 public class Crew {
     private final Player president;
     private Position citycenter;
@@ -33,7 +31,7 @@ public class Crew {
         this.citycenter = pos;
     }
 
-    protected void backHome(){
+    protected void goBackCityCenter(){
         this.row = citycenter.i;
         this.col = citycenter.j;
     }
