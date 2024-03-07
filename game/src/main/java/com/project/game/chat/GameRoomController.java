@@ -21,6 +21,7 @@ public class GameRoomController {
     @SendTo("/topic/public")
     public Message addUser(Message message, SimpMessageHeaderAccessor headerAccessor){
         headerAccessor.getSessionAttributes().put("username", message.getSender());
+        if(Message.user.isEmpty()) message.setAdmin(true);
         Message.addUser(message);
         GroupMessage g = new GroupMessage();
         for(Message u: Message.user){

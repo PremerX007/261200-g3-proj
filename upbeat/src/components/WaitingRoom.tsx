@@ -21,6 +21,9 @@ const Circle = ({ color }: { color: string }) => {
 function WaitingRoom() {
   const username = useAppSelector(selectUsername);
   const webSocketState = useAppSelector(selectWebSocket);
+  const myUser = webSocketState.onetime?.arr?.find(
+    ({ sender }) => sender === username
+  );
   return (
     <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-5">
       <div className="bg-blue-200 p-8 rounded-2xl shadow-xl">
@@ -32,7 +35,7 @@ function WaitingRoom() {
         {webSocketState.onetime?.arr?.map((message, index) => {
           return (
             <div className="flex flex-row my-5">
-              <Circle color="red" />
+              <Circle color={message.admin ? "red" : "blue"} />
               <h3 className="ml-7 text-black font-bold font-concert text-center text-2xl align-middle">
                 {message.sender}
               </h3>
@@ -41,12 +44,29 @@ function WaitingRoom() {
         })}
 
         <div className="flex flex-row items-center justify-center">
-          <button
-            type="submit"
-            className="bg-green-500 text-white select-none hover:bg-white hover:ring hover:ring-green-600 hover:text-green-500 font-beyonders text-xm border px-6 py-4 rounded-3xl flex items-center justify-center mx-5"
-          >
-            ready
-          </button>
+          {myUser?.admin ? (
+            <div className="flex flex-row">
+              <button
+                type="submit"
+                className="bg-green-500 text-white select-none hover:bg-white hover:ring hover:ring-green-600 hover:text-green-500 font-beyonders text-xm border px-6 py-4 rounded-3xl flex items-center justify-center mx-5"
+              >
+                start
+              </button>
+              <button
+                type="submit"
+                className="bg-red-500 text-white select-none hover:bg-white hover:ring hover:ring-red-600 hover:text-red-500 font-beyonders text-xm border px-4 py-2 rounded-3xl flex items-center justify-center mx-5"
+              >
+                Game Setting
+              </button>
+            </div>
+          ) : (
+            <button
+              type="submit"
+              className="bg-green-500 text-white select-none hover:bg-white hover:ring hover:ring-green-600 hover:text-green-500 font-beyonders text-xm border px-6 py-4 rounded-3xl flex items-center justify-center mx-5"
+            >
+              ready
+            </button>
+          )}
         </div>
       </div>
     </div>

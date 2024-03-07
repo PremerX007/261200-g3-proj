@@ -16,20 +16,19 @@ public class Message {
     private String sender;
     private String timestamp;
     private MessageType type;
-    private boolean isAdmin;
-    public static int count = 0;
-    public static void addCount(){
-        count++;
-    }
+    private boolean admin;
     public static void addUser(Message msg){
         user.add(msg);
     }
     public static void removeUser(String msg){
         user.removeIf(m -> m.getSender().equals(msg));
     }
-
-    public static void reduceCount(){
-        count--;
+    public static Message findUser(String us) {
+        return user.stream().filter(message -> us.equals(message.getSender()))
+                .findAny().orElse(null);
+    }
+    public boolean getAdmin(){
+        return this.admin;
     }
 
 }
