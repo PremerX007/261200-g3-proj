@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Concert+One&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,5 +7,3 @@
   font-family: "beyonders";
   src: url("../font/BeyondersItalic-jEpgj.ttf");
 }
-
-@import url("https://fonts.googleapis.com/css2?family=Concert+One&display=swap");
