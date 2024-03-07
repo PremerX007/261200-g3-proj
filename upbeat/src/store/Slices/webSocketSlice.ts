@@ -26,6 +26,7 @@ interface webSocketState {
 
 interface groupMessage {
   arr: webSocketMessage[] | undefined;
+  empty: boolean;
 }
 
 const initialState: webSocketState = {
@@ -61,4 +62,5 @@ export const {
   setStatusMessage,
 } = webSocketSlice.actions;
 export default webSocketSlice.reducer;
+export type { groupMessage };
 export const selectWebSocket = (state: RootState) => state.webSocket;

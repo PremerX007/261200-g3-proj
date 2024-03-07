@@ -12,8 +12,8 @@ const Circle = ({ color }: { color: string }) => {
   // const [count, setCount] = useState(0);
 
   return (
-    <svg height="30" width="30">
-      <circle cx="15" cy="15" r="15" fill={color} />
+    <svg height="37" width="37">
+      <circle cx="18" cy="20" r="17" fill={color} />
     </svg>
   );
 };
@@ -35,9 +35,11 @@ function WaitingRoom() {
         {webSocketState.onetime?.arr?.map((message, index) => {
           return (
             <div className="flex flex-row my-5">
-              <Circle color={message.admin ? "red" : "blue"} />
-              <h3 className="ml-7 text-black font-bold font-concert text-center text-2xl align-middle">
-                {message.sender}
+              <div>
+                <Circle color={message.admin ? "red" : "blue"} />
+              </div>
+              <h3 className="ml-7 text-black font-concert text-center text-4xl align-middle">
+                {message.sender.toUpperCase()}
               </h3>
             </div>
           );
