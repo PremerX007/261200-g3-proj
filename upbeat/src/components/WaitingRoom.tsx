@@ -1,4 +1,12 @@
 import React from "react";
+import useWebSocket from "../customHook/useWebSocket.ts";
+import { useState } from "react";
+import { useAppSelector } from "../store/hooks.ts";
+import { selectUsername } from "../store/Slices/usernameSlice.ts";
+import {
+  selectWebSocket,
+  messageType,
+} from "../store/Slices/webSocketSlice.ts";
 
 const Circle = ({ color }: { color: string }) => {
   // const [count, setCount] = useState(0);
@@ -11,6 +19,8 @@ const Circle = ({ color }: { color: string }) => {
 };
 
 function WaitingRoom() {
+  const username = useAppSelector(selectUsername);
+  const webSocketState = useAppSelector(selectWebSocket);
   return (
     <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-5">
       <div className="bg-blue-200 p-8 rounded-2xl shadow-xl">
@@ -19,12 +29,16 @@ function WaitingRoom() {
           GAME ROOM
         </h2>
 
-        <div className="flex flex-row my-5">
-          <Circle color="red" />
-          <h3 className="ml-7 text-black font-bold font-concert text-center text-2xl align-middle">
-            Premer
-          </h3>
-        </div>
+        {webSocketState.onetime?.arr?.map((message, index) => {
+          return (
+            <div className="flex flex-row my-5">
+              <Circle color="red" />
+              <h3 className="ml-7 text-black font-bold font-concert text-center text-2xl align-middle">
+                {message.sender}
+              </h3>
+            </div>
+          );
+        })}
 
         <div className="flex flex-row items-center justify-center">
           <button

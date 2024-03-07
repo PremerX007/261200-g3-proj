@@ -22,6 +22,11 @@ public class GameRoomController {
     public Message addUser(Message message, SimpMessageHeaderAccessor headerAccessor){
         headerAccessor.getSessionAttributes().put("username", message.getSender());
         Message.addUser(message);
+        GroupMessage g = new GroupMessage();
+        for(Message u: Message.user){
+            g.addMsg(u);
+        }
+        messageSendingOperations.convertAndSend("/topic/public/group", g);
         return message;
     }
 
@@ -29,18 +34,6 @@ public class GameRoomController {
     @SendTo("/topic/public")
     public Message sendMessage(Message message){
         return message;
-    }
-
-    @MessageMapping("/command.group")
-    public void group(Message message){
-//        var chatMessage = Message.builder()
-//                .sender(message.getSender())
-//                .type(MessageType.LEAVE)
-//                .build();
-
-        for(Message u: Message.user){
-            messageSendingOperations.convertAndSend("/topic/public/group", u);
-        }
     }
 
 }

@@ -14,24 +14,25 @@ interface webSocketMessage {
   content: string;
   timestamp: string;
   type: messageType;
-}
-
-interface group {
-  list: webSocketMessage[] | undefined;
+  admin: boolean;
 }
 
 interface webSocketState {
   isConnected: boolean;
   stompClient: Stomp.Client | undefined;
   messages: webSocketMessage[] | undefined;
-  onetime: webSocketMessage[] | undefined;
+  onetime: groupMessage | undefined;
+}
+
+interface groupMessage {
+  arr: webSocketMessage[] | undefined;
 }
 
 const initialState: webSocketState = {
   isConnected: false,
   stompClient: undefined,
   messages: [],
-  onetime: [],
+  onetime: undefined,
 };
 
 export const webSocketSlice = createSlice({
@@ -47,14 +48,17 @@ export const webSocketSlice = createSlice({
     setStompClient: (state, action: PayloadAction<Stomp.Client>) => {
       state.stompClient = action.payload;
     },
-    setOnetime: (state, action: PayloadAction<webSocketMessage>) => {
-      state.onetime = [];
-      state.onetime?.push(action.payload);
+    setStatusMessage: (state, action: PayloadAction<groupMessage>) => {
+      state.onetime = action.payload;
     },
   },
 });
 
-export const { setIsConnected, appendMessage, setStompClient } =
-  webSocketSlice.actions;
+export const {
+  setIsConnected,
+  appendMessage,
+  setStompClient,
+  setStatusMessage,
+} = webSocketSlice.actions;
 export default webSocketSlice.reducer;
 export const selectWebSocket = (state: RootState) => state.webSocket;

@@ -7,6 +7,7 @@ import {
   setIsConnected,
   appendMessage,
   setStompClient,
+  setStatusMessage,
 } from "../store/Slices/webSocketSlice.ts";
 import { selectWebSocket } from "../store/Slices/webSocketSlice.ts";
 
@@ -48,7 +49,7 @@ function useWebSocket() {
 
   const onConnected = (stompClient: Stomp.Client, username: string) => {
     stompClient.subscribe("/topic/public", onMessageReceived);
-    stompClient.subscribe("/topic/public/group", onMessageReceived);
+    stompClient.subscribe("/topic/public/group", playerListPayload);
     stompClient.send(
       "/app/chat.addUser",
       {},
@@ -58,20 +59,15 @@ function useWebSocket() {
         timestamp: new Date().toLocaleTimeString(),
       })
     );
-    stompClient.send(
-      "/app/command.group",
-      {},
-      JSON.stringify({
-        sender: username,
-        type: "READY",
-        timestamp: new Date().toLocaleTimeString(),
-      })
-    );
     dispatch(setIsConnected(true));
     dispatch(setStompClient(stompClient));
   };
   const onMessageReceived = (payload: Stomp.Message) => {
     dispatch(appendMessage(JSON.parse(payload.body)));
+  };
+
+  const playerListPayload = (payload: Stomp.Message) => {
+    dispatch(setStatusMessage(JSON.parse(payload.body)));
   };
   return { connect, sendMessage };
 }

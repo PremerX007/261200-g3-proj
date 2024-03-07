@@ -1,6 +1,7 @@
 package com.project.game.config;
 
 import com.project.game.chat.GameRoomController;
+import com.project.game.chat.GroupMessage;
 import com.project.game.chat.Message;
 import com.project.game.chat.MessageType;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,10 @@ public class WebSocketEventListener {
                 .type(MessageType.LEAVE)
                 .build();
         messageSendingOperations.convertAndSend("/topic/public", chatMessage);
-        messageSendingOperations.convertAndSend("/app/command.group", chatMessage);
+        GroupMessage g = new GroupMessage();
+        for(Message u: Message.user){
+            g.addMsg(u);
+        }
+        messageSendingOperations.convertAndSend("/topic/public/group", g);
     }
 }
