@@ -5,6 +5,7 @@ export default {
     extend: {
       fontFamily: {
         beyonders: ["beyonders", "san"],
+        concert: ["Concert One", "sans-serif"],
       },
     },
   },
