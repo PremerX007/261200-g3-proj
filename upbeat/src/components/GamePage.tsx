@@ -119,7 +119,7 @@ function GamePage() {
                 q={hex.q}
                 r={hex.r}
                 s={hex.s}
-                style={{ fill: "gray" }}
+                style={{ fill: "#E6E6FA" }}
               >
                 <Text className="fill-gray-800" style={{ fontSize: "3px" }}>
                   {hex.i},{hex.j}
