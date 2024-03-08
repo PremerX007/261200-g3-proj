@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  HexGrid,
-  Layout,
-  Hexagon,
-  Text,
-  Pattern,
-  Path,
-  Hex,
-} from "react-hexgrid";
+import { HexGrid, Layout, Hexagon, Text, Pattern } from "react-hexgrid";
 
 function GamePage() {
   const hexgrid9 = [
@@ -129,7 +121,7 @@ function GamePage() {
                 s={hex.s}
                 style={{ fill: "gray" }}
               >
-                <Text class="fill-gray-800" style={{ fontSize: "3px" }}>
+                <Text className="fill-gray-800" style={{ fontSize: "3px" }}>
                   {hex.i},{hex.j}
                 </Text>
               </Hexagon>
@@ -144,15 +136,17 @@ function GamePage() {
           style={{ width: "60rem" }}
         >
           <form
+            className="flex flex-row justify-center items-center"
+            style={{ width: "50rem" }}
             onSubmitCapture={(e) => {
               e.preventDefault();
             }}
           >
-            <div className="flex flex-row justify-center">
-              <div className="my-7 px-6 items-center justify-center">
+            <div className="flex flex-row justify-centerv items-center w-full">
+              <div className="my-7 px-6 items-center justify-center w-full">
                 <input
                   type="text"
-                  placeholder="Enter your name"
+                  placeholder="Enter your command here..."
                   className="block w-full px-4 py-2 border rounded-2xl outline outline-offset-2 outline-blue-900"
                   value={type}
                   onChange={(e) => setType(e.target.value)}
