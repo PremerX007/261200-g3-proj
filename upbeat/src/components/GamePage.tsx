@@ -105,7 +105,9 @@ function GamePage() {
         </h2>
       </div>
       <div className="h-4/5 w-screen flex flex-row justify-center items-center">
-        <div className="w-1/6 h-full bg-blue-500"></div>
+        <div className="w-1/6 h-full bg-blue-500 flex flex-col justify-center items-center">
+          <h4 className="font-beyonders text-white text-xm my-5">Player 1</h4>
+        </div>
         <HexGrid width={960} height={700} style={{ border: "5px solid black" }}>
           <Layout
             size={{ x: 5, y: 5 }}
@@ -130,7 +132,11 @@ function GamePage() {
         </HexGrid>
       </div>
       <div className="h-screen w-screen flex flex-row justify-center items-center">
-        <div className="w-1/6 h-full bg-blue-100"></div>
+        <div className="w-1/6 h-full bg-blue-100 flex flex-col justify-center items-center">
+          <h4 className="font-beyonders text-black text-xm my-5">
+            Player List
+          </h4>
+        </div>
         <div
           className="h-full bg-blue-300 flex flex-col justify-center items-center"
           style={{ width: "60rem" }}
