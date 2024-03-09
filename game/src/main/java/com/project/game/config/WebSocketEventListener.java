@@ -1,6 +1,5 @@
 package com.project.game.config;
 
-import com.project.game.chat.GameRoomController;
 import com.project.game.chat.GroupMessage;
 import com.project.game.chat.Message;
 import com.project.game.chat.MessageType;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.util.NoSuchElementException;
-import java.util.Objects;
 
 @Component
 @Slf4j
@@ -27,15 +25,21 @@ public class WebSocketEventListener {
         SimpMessageHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         String username = (String) headerAccessor.getSessionAttributes().get("username");
 
-        if(Message.findUser(username).getAdmin()){
-            Message.removeUser(username);
-            try{
-                Message.user.getFirst().setAdmin(true);
-            }catch (NoSuchElementException e){
-                log.info("Every player disconnect from game");
+        try {
+            log.info("Player \"" + username + "\" disconnect from server");
+            if(Message.findUser(username).getAdmin()){
+                Message.removeUser(username);
+                try{
+                    Message.user.getFirst().setAdmin(true);
+                }catch (NoSuchElementException e){
+                    log.info("Every player disconnect from game");
+                }
+            }else{
+                Message.removeUser(username);
             }
-        }else{
-            Message.removeUser(username);
+        }catch (NullPointerException e){
+            Message.user.clear();
+            log.info("Set player list to empty");
         }
 
         var chatMessage = Message.builder()

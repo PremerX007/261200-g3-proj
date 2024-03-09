@@ -3,11 +3,20 @@ import AnimateLogo from "./AnimateLogo";
 import { useDispatch } from "react-redux";
 import useWebSocket from "../customHook/useWebSocket.ts";
 import { setUsername as sliceSetUsername } from "../store/Slices/usernameSlice.ts";
+import { getPlayer, setServer } from "../repositories/restApi.ts";
+import { groupMessage } from "../store/Slices/webSocketSlice.ts";
+import Modal from "./Modal.tsx";
 
 function LoginPage() {
   const [username, setUsername] = useState<string>("");
+  const [open, setOpenModal] = useState<boolean>(true);
+  const [isDuplicatePlayer, setDupicate] = useState<boolean>(false);
+  const [isFullPlayer, setFullPlayer] = useState<boolean>(false);
+  const [isUsernameRule, setUsernameRule] = useState<boolean>(false);
   const dispatch = useDispatch();
   const { connect } = useWebSocket();
+  let arrayGroup: groupMessage;
+  setServer("http://localhost:8080");
 
   return (
     <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-5">
@@ -18,11 +27,67 @@ function LoginPage() {
           UPBEAT
         </h2>
 
+        {isUsernameRule ? (
+          <Modal
+            open={open}
+            onClose={() => setOpenModal(false)}
+            header="Message from server"
+            content="Player username must be less than 20 character."
+          ></Modal>
+        ) : isFullPlayer ? (
+          <Modal
+            open={open}
+            onClose={() => setOpenModal(false)}
+            header="Message from server"
+            content="Waiting room is full. Please wait a moment."
+          ></Modal>
+        ) : isDuplicatePlayer ? (
+          <Modal
+            open={open}
+            onClose={() => setOpenModal(false)}
+            header="Message from server"
+            content="Player username is already, please user another username."
+          ></Modal>
+        ) : (
+          ""
+        )}
+
         <form
-          onSubmitCapture={(e) => {
+          onSubmitCapture={async (e) => {
             e.preventDefault();
-            dispatch(sliceSetUsername(username));
-            connect(username);
+            if (username.length > 20) {
+              setUsernameRule(true);
+              setOpenModal(true);
+              return;
+            }
+            await getPlayer()
+              .then((response) => {
+                arrayGroup = Array.isArray(response.data)
+                  ? response.data
+                  : [response.data];
+                console.log(response.data);
+              })
+              .catch((e) => console.log("error to call player api" + e));
+            if (arrayGroup[0].arr.length === 4) {
+              setFullPlayer(true);
+              setOpenModal(true);
+            } else if (arrayGroup[0].arr.length > 0) {
+              if (
+                arrayGroup[0].arr.find(
+                  ({ sender }) =>
+                    sender.toUpperCase() === username.toUpperCase()
+                )
+              ) {
+                setDupicate(true);
+                setOpenModal(true);
+              } else {
+                dispatch(sliceSetUsername(username));
+                connect(username);
+              }
+            } else {
+              dispatch(sliceSetUsername(username));
+              connect(username);
+            }
           }}
         >
           <div className="my-7 px-6 items-center justify-center">

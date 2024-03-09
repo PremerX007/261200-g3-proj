@@ -47,6 +47,22 @@ function useWebSocket() {
     }
   }
 
+  function sendPlayerStatus(type: string, username: string) {
+    if (webSocket.stompClient && webSocket.stompClient.connected) {
+      const chatMessage = {
+        sender: username,
+        content: "",
+        timestamp: new Date().toLocaleTimeString(),
+        type: type.toUpperCase(),
+      };
+      webSocket.stompClient.send(
+        "/app/chat.status",
+        {},
+        JSON.stringify(chatMessage)
+      );
+    }
+  }
+
   const onConnected = (stompClient: Stomp.Client, username: string) => {
     stompClient.subscribe("/topic/public", onMessageReceived);
     stompClient.subscribe("/topic/public/group", playerListPayload);
@@ -62,6 +78,7 @@ function useWebSocket() {
     dispatch(setIsConnected(true));
     dispatch(setStompClient(stompClient));
   };
+
   const onMessageReceived = (payload: Stomp.Message) => {
     dispatch(appendMessage(JSON.parse(payload.body)));
   };
@@ -69,7 +86,7 @@ function useWebSocket() {
   const playerListPayload = (payload: Stomp.Message) => {
     dispatch(setStatusMessage(JSON.parse(payload.body)));
   };
-  return { connect, sendMessage };
+  return { connect, sendMessage, sendPlayerStatus };
 }
 
 export default useWebSocket;
