@@ -6,15 +6,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin
@@ -51,6 +43,44 @@ public class GameRoomController {
             g.addMsg(u);
         }
         return g;
+    }
+
+    @GetMapping("/game/config/reset")
+    public GameConfig returnInitConfig(){
+        return GameConfig.builder()
+                .m(9)
+                .n(9)
+                .init_plan_min(5)
+                .init_plan_sec(0)
+                .init_budget(10000)
+                .init_center_dep(100)
+                .plan_rev_min(30)
+                .plan_rev_sec(0)
+                .rev_cost(100)
+                .max_dep(1000000)
+                .interest_pct(5)
+                .build();
+    }
+
+    @PutMapping("/game/config/set")
+    public GameConfig putPlayerConfig(@RequestBody GameConfig config){
+        return GameConfig.userConfig = config;
+    }
+
+    @GetMapping("/game/config")
+    public GameConfig returnUserConfig(){
+        return GameConfig.userConfig;
+    }
+
+    @MessageMapping("/chat.status")
+    public void status(Message message){
+        Message tmp = Message.findUser(message.getSender());
+        tmp.setType(message.getType());
+        GroupMessage g = new GroupMessage();
+        for(Message u: Message.user){
+            g.addMsg(u);
+        }
+        messageSendingOperations.convertAndSend("/topic/public/group", g);
     }
 
 }

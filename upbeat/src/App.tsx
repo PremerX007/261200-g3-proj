@@ -4,6 +4,7 @@ import WaitingRoom from "./components/WaitingRoom";
 import { useAppSelector } from "./store/hooks";
 import { selectWebSocket } from "./store/Slices/webSocketSlice";
 import GamePage from "./components/GamePage";
+import SettingPage from "./components/SettingPage";
 
 function App() {
   const webSocketState = useAppSelector(selectWebSocket);

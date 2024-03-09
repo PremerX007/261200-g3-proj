@@ -7,18 +7,22 @@ import {
   selectWebSocket,
   messageType,
 } from "../store/Slices/webSocketSlice.ts";
+import ReadyIcon from "./ReadyIcon.tsx";
+import NotReadyIcon from "./NotReadyIcon.tsx";
+import SettingPage from "./SettingPage.tsx";
 
 const Circle = ({ color }: { color: string }) => {
-  // const [count, setCount] = useState(0);
-
   return (
-    <svg height="37" width="37">
-      <circle cx="18" cy="20" r="17" fill={color} />
+    <svg height="40" width="40">
+      <circle cx="21" cy="20" r="19" fill={color} />
     </svg>
   );
 };
 
 function WaitingRoom() {
+  const { sendPlayerStatus } = useWebSocket();
+  const [playerStatus, setStatus] = useState<boolean>(false);
+  const [onSettingPage, setOnSettingPage] = useState<boolean>(false);
   const username = useAppSelector(selectUsername);
   const webSocketState = useAppSelector(selectWebSocket);
   const myUser = webSocketState.onetime?.arr?.find(
@@ -26,21 +30,29 @@ function WaitingRoom() {
   );
   return (
     <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-5">
+      {onSettingPage ? <SettingPage buttonState={setOnSettingPage} /> : ""}
       <div className="bg-blue-200 p-8 rounded-2xl shadow-xl">
         {/* Your login form or content goes here */}
-        <h2 className="font-beyonders select-none text-blue-900 drop-shadow-xl text-2xl text-center py-3 mx-60 align-top">
+        <h2 className="font-beyonders select-none text-blue-900 text-2xl text-center py-3 mx-40 align-top">
           GAME ROOM
         </h2>
-
         {webSocketState.onetime?.arr?.map((message, index) => {
           return (
             <div className="flex flex-row my-5">
-              <div>
-                <Circle color={message.admin ? "red" : "blue"} />
-              </div>
+              {message.admin ? (
+                <div>
+                  <Circle color="blue" />
+                </div>
+              ) : message.type === "READY" ? (
+                <ReadyIcon />
+              ) : (
+                <NotReadyIcon />
+              )}
+
               <h3 className="ml-7 text-black font-concert text-center text-4xl align-middle">
                 {message.sender.toUpperCase()}
               </h3>
+              <div className="justify-items-end"></div>
             </div>
           );
         })}
@@ -57,14 +69,32 @@ function WaitingRoom() {
               <button
                 type="submit"
                 className="bg-red-500 text-white select-none hover:bg-white hover:ring hover:ring-red-600 hover:text-red-500 font-beyonders text-xm border px-4 py-2 rounded-3xl flex items-center justify-center mx-5"
+                onClick={() => {
+                  setOnSettingPage(true);
+                }}
               >
                 Game Setting
               </button>
             </div>
+          ) : playerStatus ? (
+            <button
+              type="submit"
+              className="bg-red-500 text-white select-none hover:bg-white hover:ring hover:ring-red-600 hover:text-red-500 font-beyonders text-xm border px-4 py-4 rounded-3xl flex items-center justify-center mx-5"
+              onClick={() => {
+                setStatus(false);
+                sendPlayerStatus("notready", username);
+              }}
+            >
+              not ready
+            </button>
           ) : (
             <button
               type="submit"
               className="bg-green-500 text-white select-none hover:bg-white hover:ring hover:ring-green-600 hover:text-green-500 font-beyonders text-xm border px-6 py-4 rounded-3xl flex items-center justify-center mx-5"
+              onClick={() => {
+                setStatus(true);
+                sendPlayerStatus("ready", username);
+              }}
             >
               ready
             </button>

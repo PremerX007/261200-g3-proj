@@ -1,6 +1,5 @@
 package com.project.game.config;
 
-import com.project.game.chat.GameRoomController;
 import com.project.game.chat.GroupMessage;
 import com.project.game.chat.Message;
 import com.project.game.chat.MessageType;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.util.NoSuchElementException;
-import java.util.Objects;
 
 @Component
 @Slf4j
