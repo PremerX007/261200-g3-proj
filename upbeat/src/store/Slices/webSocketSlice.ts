@@ -22,6 +22,7 @@ interface webSocketState {
   stompClient: Stomp.Client | undefined;
   messages: webSocketMessage[] | undefined;
   onetime: groupMessage | undefined;
+  gameStart: boolean;
 }
 
 interface groupMessage {
@@ -34,6 +35,7 @@ const initialState: webSocketState = {
   stompClient: undefined,
   messages: [],
   onetime: undefined,
+  gameStart: false,
 };
 
 export const webSocketSlice = createSlice({
@@ -52,6 +54,9 @@ export const webSocketSlice = createSlice({
     setStatusMessage: (state, action: PayloadAction<groupMessage>) => {
       state.onetime = action.payload;
     },
+    setGameStart: (state, action: PayloadAction<boolean>) => {
+      state.gameStart = action.payload;
+    },
   },
 });
 
@@ -60,6 +65,7 @@ export const {
   appendMessage,
   setStompClient,
   setStatusMessage,
+  setGameStart,
 } = webSocketSlice.actions;
 export default webSocketSlice.reducer;
 export type { groupMessage };

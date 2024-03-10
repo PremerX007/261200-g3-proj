@@ -11,7 +11,7 @@ type propTypes = {
   open: boolean;
   onClose: () => void;
   header: string;
-  content: string;
+  content: string | undefined;
 };
 
 const Modal: React.FC<propTypes> = ({ open, onClose, header, content }) => {

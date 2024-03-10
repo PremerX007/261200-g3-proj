@@ -7,3 +7,7 @@
   font-family: "beyonders";
   src: url("../font/BeyondersItalic-jEpgj.ttf");
 }
+
+.crew-image {
+  background-image: url("../asset/icon.png");
+}

@@ -1,6 +1,11 @@
 import axios, { AxiosResponse } from "axios";
 import { groupMessage } from "../store/Slices/webSocketSlice";
 import { config } from "../components/SettingPage";
+
+interface constRest {
+  result?: string;
+}
+
 export type Response<T> = Promise<AxiosResponse<T>>;
 function getAxiosInstance() {
   return axios.create({ baseURL: getServer() });
@@ -20,6 +25,14 @@ export async function getInitConfig(): Response<config> {
 
 export async function getUserConfig(): Response<config> {
   return getAxiosInstance().get(`/game/config`);
+}
+
+export async function postConstCheck(
+  msg: string | undefined
+): Response<constRest> {
+  return getAxiosInstance().post(`/game/plan/check`, msg, {
+    headers: { "Content-Type": "text/plain" },
+  });
 }
 
 export function putUserConfig(user: config | undefined): Response<config> {
@@ -45,3 +58,5 @@ export function setServer(server: string | null): void {
   if (!server) return window.localStorage.removeItem("server");
   window.localStorage.setItem("server", server);
 }
+
+export type { constRest };

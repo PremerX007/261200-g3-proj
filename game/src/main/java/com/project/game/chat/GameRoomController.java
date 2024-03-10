@@ -1,5 +1,11 @@
 package com.project.game.chat;
 
+import com.project.game.repo.src.Parser.PlanParser;
+import com.project.game.repo.src.Parser.Statement.Statement;
+import com.project.game.repo.src.Tokenizer.LexicalError;
+import com.project.game.repo.src.Tokenizer.PlanTokenizer;
+import com.project.game.repo.src.Tokenizer.SyntaxError;
+import com.project.game.repo.src.Tokenizer.Tokenizer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -7,6 +13,10 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.NoSuchElementException;
 
 @RestController
 @CrossOrigin
@@ -81,6 +91,30 @@ public class GameRoomController {
             g.addMsg(u);
         }
         messageSendingOperations.convertAndSend("/topic/public/group", g);
+    }
+
+    @PostMapping("game/plan/check")
+    public PlanRest checkConstructionPlan(@RequestBody String body) throws IOException {
+        try {
+            Tokenizer tkz = new PlanTokenizer(new StringReader(body));
+            PlanParser plan = new PlanParser(tkz);
+            try {
+                Statement stm = plan.parse();
+            } catch (SyntaxError | NoSuchElementException e) {
+                return PlanRest.builder().result(e.getMessage()+" ❌").build();
+            }
+        } catch (LexicalError e) {
+            return PlanRest.builder().result(e.getMessage()+" ❌").build();
+        }
+        return PlanRest.builder().result("Your construction plan can be used ✅").build();
+    }
+
+    @GetMapping("game/terit")
+    public ArrayTerritory getTeritory(){
+        ArrayTerritory tmp =  ArrayTerritory.builder().arr(new String[10][10]).build();
+        tmp.setPos(1,2,"hallo");
+        tmp.setPos(2,3,"api");
+        return tmp;
     }
 
 }

@@ -1,5 +1,9 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { HexGrid, Layout, Hexagon, Text, Pattern } from "react-hexgrid";
+import { Editor, Monaco } from "@monaco-editor/react";
+import { constRest, postConstCheck } from "../repositories/restApi";
+import Modal from "./Modal";
+import Logo from "../assets/icon.png";
 
 function GamePage() {
   const hexgrid9 = [
@@ -95,81 +99,151 @@ function GamePage() {
     { q: 4, r: 2, s: -6, i: 9, j: 9 },
   ];
 
+  const Circle = ({ color }: { color: string }) => {
+    return (
+      <svg height="30" width="26">
+        <circle cx="14" cy="18" r="12" fill={color} />
+      </svg>
+    );
+  };
+
+  const Circle2 = ({ color }: { color: string }) => {
+    return (
+      <svg>
+        <circle cx="0" cy="0" r="3" fill={color} />
+      </svg>
+    );
+  };
   const [type, setType] = useState<string>("");
+  const [opCheckPlan, setOperateCheckplan] = useState<boolean>(false);
+  const [open, setOpenModal] = useState<boolean>(true);
+  const [msgFromServer, setMessageFromServer] = useState<string | undefined>(
+    ""
+  );
+  const [typedPlan, setTypedPlan] = useState<string | undefined>(
+    "# Write your construction plan here"
+  );
 
   return (
-    <div className="h-screen w-screen flex flex-col justify-center items-center">
-      <div className="w-full h-1/4">
-        <h2 className="font-beyonders select-none text-blue-900 drop-shadow-xl text-5xl text-center mx-auto my-5 py-3">
+    <div className="h-screen w-screen flex flex-col justify-center items-center bg-white">
+      {opCheckPlan ? (
+        <Modal
+          open={open}
+          onClose={() => setOpenModal(false)}
+          header="Message from server"
+          content={msgFromServer}
+        ></Modal>
+      ) : (
+        ""
+      )}
+      ;
+      <div className="mx-auto mt-24 mb-5">
+        <h2 className="font-beyonders select-none text-blue-900 drop-shadow-xl text-3xl text-center mx-auto">
           UPBEAT
         </h2>
       </div>
-      <div className="h-4/5 w-screen flex flex-row justify-center items-center">
-        <div className="w-1/6 h-full bg-blue-500 flex flex-col justify-center items-center">
-          <h4 className="font-beyonders text-white text-xm my-5">Player 1</h4>
-        </div>
-        <HexGrid width={960} height={700} style={{ border: "5px solid black" }}>
-          <Layout
-            size={{ x: 5, y: 5 }}
-            flat={true}
-            spacing={1.05}
-            origin={{ x: 0, y: 0 }}
-          >
-            {hexgrid9.map((hex, i) => (
-              <Hexagon
-                key={i}
-                q={hex.q}
-                r={hex.r}
-                s={hex.s}
-                style={{ fill: "#E6E6FA" }}
-              >
-                <Text className="fill-gray-800" style={{ fontSize: "3px" }}>
-                  {hex.i},{hex.j}
-                </Text>
-              </Hexagon>
-            ))}
-          </Layout>
-        </HexGrid>
-      </div>
-      <div className="h-screen w-screen flex flex-row justify-center items-center">
-        <div className="w-1/6 h-full bg-blue-100 flex flex-col justify-center items-center">
-          <h4 className="font-beyonders text-black text-xm my-5">
-            Player List
-          </h4>
-        </div>
-        <div
-          className="h-full bg-blue-300 flex flex-col justify-center items-center"
-          style={{ width: "60rem" }}
-        >
-          <form
-            className="flex flex-row justify-center items-center"
-            style={{ width: "50rem" }}
-            onSubmitCapture={(e) => {
-              e.preventDefault();
-            }}
-          >
-            <div className="flex flex-row justify-centerv items-center w-full">
-              <div className="my-7 px-6 items-center justify-center w-full">
-                <input
-                  type="text"
-                  placeholder="Enter your command here..."
-                  className="block w-full px-4 py-2 border rounded-2xl outline outline-offset-2 outline-blue-900"
-                  value={type}
-                  onChange={(e) => setType(e.target.value)}
-                  required
-                />
-              </div>
+      <div className="flex flex-row w-full h-full justify-between">
+        <div className="flex flex-col justify-start w-full h-full">
+          <div className="bg-blue-500 flex flex-col h-4/6 px-5 py-5">
+            <h4 className="font-beyonders text-white text-xm">Player</h4>
+          </div>
 
-              <div className="flex flex-row justify-center">
-                <button
-                  type="submit"
-                  className="bg-green-500 text-white select-none hover:bg-white hover:ring hover:ring-green-600 hover:text-green-500 font-beyonders text-xs border px-6 py-4 rounded-3xl flex items-center justify-center mx-2 my-4"
-                >
-                  Submit
-                </button>
-              </div>
+          <div className="bg-blue-100 flex flex-col h-2/6 px-5 py-5">
+            <h4 className="font-beyonders text-black text-xm">Player turn</h4>
+            <div className="flex flex-row my-3">
+              <Circle color="blue" />
+              <h3 className="ml-4 text-black font-concert text-center text-2xl align-middle">
+                {/* {message.sender.toUpperCase()} */}
+                Premer
+              </h3>
             </div>
-          </form>
+          </div>
+        </div>
+
+        <div className="flex flex-col justify-items-center items-center">
+          <div className="items-center h-4/6">
+            <HexGrid
+              width={960}
+              height={600}
+              style={{ border: "4px solid black", position: "relative" }}
+            >
+              <Layout
+                size={{ x: 5, y: 5 }}
+                flat={true}
+                spacing={1.05}
+                origin={{ x: 0, y: 0 }}
+              >
+                <g style={{ position: "absolute" }}>
+                  {hexgrid9.map((hex, i) => (
+                    <Hexagon
+                      key={i}
+                      q={hex.q}
+                      r={hex.r}
+                      s={hex.s}
+                      style={{
+                        fill: "#E6E6FA",
+                        strokeWidth: "0.1",
+                        stroke: "#000000",
+                      }}
+                      onMouseOver={() => {
+                        console.log(hex.i + " " + hex.j);
+                      }}
+                    >
+                      {/* <circle cx="0" cy="0" r="2.5" fill="red" /> */}
+                      {/* <polygon points="0,-2.5 -2,2 2,2" fill="lime" /> */}
+                      <Text
+                        className="fill-gray-500"
+                        style={{ fontSize: "1.5px", strokeOpacity: "0" }}
+                      >
+                        {hex.i},{hex.j}
+                      </Text>
+                    </Hexagon>
+                  ))}
+                </g>
+                <Pattern
+                  id="pattern1"
+                  link="https://picsum.photos/200?image=80"
+                ></Pattern>
+              </Layout>
+            </HexGrid>
+          </div>
+
+          <div className="h-2/6 w-full justify-center items-center">
+            <Editor
+              height="100%"
+              width="100%"
+              theme="vs-dark"
+              defaultValue={typedPlan}
+              options={{ fontSize: 17 }}
+              onChange={(e) => setTypedPlan(e)}
+            />
+          </div>
+        </div>
+
+        <div className="flex flex-col justify-end items-end w-full">
+          <div className="w-full h-4/6 items-end bg-black">fdgd</div>
+          <div className="bg-blue-100 w-full h-2/6 px-4 py-11 flex flex-col items-center">
+            <button
+              type="button"
+              className="bg-blue-900 text-white select-none hover:bg-white hover:ring hover:ring-blue-900 hover:text-blue-900 font-beyonders text-xm border px-6 py-3 rounded-3xl flex items-center justify-center mx-auto my-2"
+              onClick={async () => {
+                await postConstCheck(typedPlan)
+                  .then((res) => setMessageFromServer(res.data.result))
+                  .catch((e) => alert(e));
+                setOperateCheckplan(true);
+                setOpenModal(true);
+              }}
+            >
+              check plan
+            </button>
+            <button
+              type="button"
+              className="bg-green-500 text-white select-none hover:bg-white hover:ring hover:ring-green-600 hover:text-green-500 font-beyonders text-xm border px-6 py-3 rounded-3xl flex items-center justify-center mx-auto my-2"
+              onClick={() => console.log(typedPlan)}
+            >
+              sent
+            </button>
+          </div>
         </div>
       </div>
     </div>
