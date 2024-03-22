@@ -7,6 +7,6 @@ import lombok.Setter;
 @Getter
 @Builder
 @Setter
-public class PlanRest {
+public class PlanCheckResponse {
     private String result;
 }

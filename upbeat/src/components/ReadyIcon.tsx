@@ -1,8 +1,16 @@
 import React from "react";
+interface ReadyIconProp {
+  width?: string | number;
+  height?: string | number;
+}
 
-function ReadyIcon() {
+function ReadyIcon(prop: ReadyIconProp) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="41" height="41">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={prop.height ? prop.height : "41"}
+      height={prop.width ? prop.width : "41"}
+    >
       <circle
         r="35"
         fill="#FFF"

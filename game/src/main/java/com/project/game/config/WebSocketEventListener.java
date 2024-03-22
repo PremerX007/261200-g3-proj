@@ -3,6 +3,7 @@ package com.project.game.config;
 import com.project.game.chat.GroupMessage;
 import com.project.game.chat.Message;
 import com.project.game.chat.MessageType;
+import com.project.game.chat.PlayerList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -27,18 +28,18 @@ public class WebSocketEventListener {
 
         try {
             log.info("Player \"" + username + "\" disconnect from server");
-            if(Message.findUser(username).getAdmin()){
-                Message.removeUser(username);
+            if(PlayerList.findUser(username).getAdmin()){
+                PlayerList.removeUser(username);
                 try{
-                    Message.user.getFirst().setAdmin(true);
+                    PlayerList.user.getFirst().setAdmin(true);
                 }catch (NoSuchElementException e){
                     log.info("Every player disconnect from game");
                 }
             }else{
-                Message.removeUser(username);
+                PlayerList.removeUser(username);
             }
         }catch (NullPointerException e){
-            Message.user.clear();
+            PlayerList.user.clear();
             log.info("Set player list to empty");
         }
 
@@ -48,7 +49,7 @@ public class WebSocketEventListener {
                 .build();
         messageSendingOperations.convertAndSend("/topic/public", chatMessage);
         GroupMessage g = new GroupMessage();
-        for(Message u: Message.user){
+        for(Message u: PlayerList.user){
             g.addMsg(u);
         }
         messageSendingOperations.convertAndSend("/topic/public/group", g);

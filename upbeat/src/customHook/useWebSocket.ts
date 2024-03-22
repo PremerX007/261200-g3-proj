@@ -8,6 +8,8 @@ import {
   appendMessage,
   setStompClient,
   setStatusMessage,
+  setGameData,
+  setGameStateSignal,
 } from "../store/Slices/webSocketSlice.ts";
 import { selectWebSocket } from "../store/Slices/webSocketSlice.ts";
 
@@ -47,6 +49,22 @@ function useWebSocket() {
     }
   }
 
+  function gameStart() {
+    if (webSocket.stompClient && webSocket.stompClient.connected) {
+      const chatMessage = {
+        sender: "ADMIN",
+        content: "",
+        timestamp: new Date().toLocaleTimeString(),
+        type: "START",
+      };
+      webSocket.stompClient.send(
+        "/app/chat.sendMessage",
+        {},
+        JSON.stringify(chatMessage)
+      );
+    }
+  }
+
   function sendPlayerStatus(type: string, username: string) {
     if (webSocket.stompClient && webSocket.stompClient.connected) {
       const chatMessage = {
@@ -66,6 +84,8 @@ function useWebSocket() {
   const onConnected = (stompClient: Stomp.Client, username: string) => {
     stompClient.subscribe("/topic/public", onMessageReceived);
     stompClient.subscribe("/topic/public/group", playerListPayload);
+    stompClient.subscribe("/topic/public/game", GamePayload);
+    stompClient.subscribe("/topic/public/game/state", GameStatePayload);
     stompClient.send(
       "/app/chat.addUser",
       {},
@@ -86,7 +106,19 @@ function useWebSocket() {
   const playerListPayload = (payload: Stomp.Message) => {
     dispatch(setStatusMessage(JSON.parse(payload.body)));
   };
-  return { connect, sendMessage, sendPlayerStatus };
+
+  const GamePayload = (payload: Stomp.Message) => {
+    dispatch(setGameData(JSON.parse(payload.body)));
+  };
+
+  const GameStatePayload = (payload: Stomp.Message) => {
+    dispatch(setGameStateSignal(JSON.parse(payload.body)));
+  };
+
+  function disconnect() {
+    dispatch(setIsConnected(false));
+  }
+  return { connect, sendMessage, gameStart, sendPlayerStatus, disconnect };
 }
 
 export default useWebSocket;

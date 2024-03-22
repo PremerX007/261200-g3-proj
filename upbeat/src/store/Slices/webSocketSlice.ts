@@ -8,13 +8,63 @@ export enum messageType {
   LEAVE = "LEAVE",
   READY = "READY",
   NOTREADY = "NOTREADY",
+  START = "START",
 }
+
+export enum commandType {
+  INIT = "INIT",
+  GAME = "GAME",
+  END = "END",
+}
+
+interface GameState {
+  command: commandType;
+  nowturn: string;
+}
+
+interface GameData {
+  playerlist: player[];
+  territory: region[][];
+}
+
+interface player {
+  name: string;
+  ownCity: number;
+  budget: number;
+  lose: boolean;
+  color: string;
+  constInit: boolean;
+  myTurn: boolean;
+  useOldStatement: boolean;
+}
+
+interface territory {
+  reg: region[][];
+}
+
+interface region {
+  row: number;
+  col: number;
+  president: string;
+  deposit: number;
+  interest: number;
+  cityCenter: boolean;
+  crew: boolean;
+}
+
 interface webSocketMessage {
   sender: string;
   content: string;
   timestamp: string;
   type: messageType;
   admin: boolean;
+  turn: boolean;
+}
+
+interface groupMessage {
+  user: webSocketMessage[] | undefined;
+  readyPerson: number;
+  start: boolean;
 }
 
 interface webSocketState {
@@ -23,11 +73,8 @@ interface webSocketState {
   messages: webSocketMessage[] | undefined;
   onetime: groupMessage | undefined;
   gameStart: boolean;
-}
-
-interface groupMessage {
-  arr: webSocketMessage[] | undefined;
-  empty: boolean;
+  gamedata: GameData | undefined;
+  gamestate: GameState | undefined;
 }
 
 const initialState: webSocketState = {
@@ -36,6 +83,8 @@ const initialState: webSocketState = {
   messages: [],
   onetime: undefined,
   gameStart: false,
+  gamedata: undefined,
+  gamestate: undefined,
 };
 
 export const webSocketSlice = createSlice({
@@ -53,9 +102,14 @@ export const webSocketSlice = createSlice({
     },
     setStatusMessage: (state, action: PayloadAction<groupMessage>) => {
       state.onetime = action.payload;
+      state.gameStart = action.payload.start;
     },
-    setGameStart: (state, action: PayloadAction<boolean>) => {
-      state.gameStart = action.payload;
+    setGameData: (state, action: PayloadAction<GameData>) => {
+      state.gamedata = action.payload;
+      console.log(state.gamedata);
+    },
+    setGameStateSignal: (state, action: PayloadAction<GameState>) => {
+      state.gamestate = action.payload;
     },
   },
 });
@@ -65,8 +119,9 @@ export const {
   appendMessage,
   setStompClient,
   setStatusMessage,
-  setGameStart,
+  setGameData,
+  setGameStateSignal,
 } = webSocketSlice.actions;
 export default webSocketSlice.reducer;
-export type { groupMessage };
+export type { groupMessage, GameData, player };
 export const selectWebSocket = (state: RootState) => state.webSocket;

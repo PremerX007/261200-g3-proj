@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import { groupMessage } from "../store/Slices/webSocketSlice";
-import { config } from "../components/SettingPage";
+import { gameConfig } from "../components/SettingPage";
 
 interface constRest {
   result?: string;
@@ -19,12 +19,27 @@ export async function getPlayer(): Response<groupMessage> {
   return getAxiosInstance().get(`/player`);
 }
 
-export async function getInitConfig(): Response<config> {
+export async function getInitConfig(): Response<gameConfig> {
   return getAxiosInstance().get(`/game/config/reset`);
 }
 
-export async function getUserConfig(): Response<config> {
+export async function getUserConfig(): Response<gameConfig> {
   return getAxiosInstance().get(`/game/config`);
+}
+
+export async function postInitConst(
+  msg: string | undefined
+): Response<constRest> {
+  return getAxiosInstance().post(`/game/plan/init`, msg, {
+    headers: { "Content-Type": "application/json" },
+  });
+}
+export async function postNewConst(
+  msg: string | undefined
+): Response<constRest> {
+  return getAxiosInstance().post(`/game/plan/setter`, msg, {
+    headers: { "Content-Type": "application/json" },
+  });
 }
 
 export async function postConstCheck(
@@ -35,7 +50,9 @@ export async function postConstCheck(
   });
 }
 
-export function putUserConfig(user: config | undefined): Response<config> {
+export function putUserConfig(
+  user: gameConfig | undefined
+): Response<gameConfig> {
   const userConfig = JSON.stringify({
     m: user?.m,
     n: user?.n,

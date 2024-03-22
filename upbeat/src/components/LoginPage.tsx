@@ -6,6 +6,9 @@ import { setUsername as sliceSetUsername } from "../store/Slices/usernameSlice.t
 import { getPlayer, setServer } from "../repositories/restApi.ts";
 import { groupMessage } from "../store/Slices/webSocketSlice.ts";
 import Modal from "./Modal.tsx";
+import TimerCom from "./TimerComLegacy.tsx";
+import { selectWebSocket } from "../store/Slices/webSocketSlice.ts";
+import { useAppSelector } from "../store/hooks.ts";
 
 function LoginPage() {
   const [username, setUsername] = useState<string>("");
@@ -13,19 +16,42 @@ function LoginPage() {
   const [isDuplicatePlayer, setDupicate] = useState<boolean>(false);
   const [isFullPlayer, setFullPlayer] = useState<boolean>(false);
   const [isUsernameRule, setUsernameRule] = useState<boolean>(false);
+  const [isGameStarted, setGameStarted] = useState<boolean>(false);
   const dispatch = useDispatch();
   const { connect } = useWebSocket();
+  const webSocketState = useAppSelector(selectWebSocket);
   let arrayGroup: groupMessage;
   setServer("http://localhost:8080");
 
   return (
     <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-5">
       <div className="bg-blue-200 p-8 rounded-2xl shadow-xl">
-        {/* Your login form or content goes here */}
         <AnimateLogo />
         <h2 className="font-beyonders select-none text-blue-900 drop-shadow-xl text-5xl text-center mx-auto my-5 py-3">
           UPBEAT
         </h2>
+
+        {webSocketState.gameStart ? (
+          <Modal
+            open={open}
+            onClose={() => setOpenModal(false)}
+            header="Message from server"
+            content="You were kicked out of the waiting room. Because you weren't ready"
+          ></Modal>
+        ) : (
+          ""
+        )}
+
+        {isGameStarted ? (
+          <Modal
+            open={open}
+            onClose={() => setOpenModal(false)}
+            header="Message from server"
+            content="The game is in progress. Please wait for the next turn."
+          ></Modal>
+        ) : (
+          ""
+        )}
 
         {isUsernameRule ? (
           <Modal
@@ -55,6 +81,11 @@ function LoginPage() {
         <form
           onSubmitCapture={async (e) => {
             e.preventDefault();
+            if (webSocketState.gameStart) {
+              setGameStarted(true);
+              setOpenModal(true);
+              return;
+            }
             if (username.length > 20) {
               setUsernameRule(true);
               setOpenModal(true);
@@ -68,12 +99,12 @@ function LoginPage() {
                 console.log(response.data);
               })
               .catch((e) => console.log("error to call player api" + e));
-            if (arrayGroup[0].arr.length === 4) {
+            if (arrayGroup[0].user.length === 4) {
               setFullPlayer(true);
               setOpenModal(true);
-            } else if (arrayGroup[0].arr.length > 0) {
+            } else if (arrayGroup[0].user.length > 0) {
               if (
-                arrayGroup[0].arr.find(
+                arrayGroup[0].user.find(
                   ({ sender }) =>
                     sender.toUpperCase() === username.toUpperCase()
                 )
@@ -94,7 +125,7 @@ function LoginPage() {
             <input
               type="text"
               placeholder="Enter your name"
-              className="block w-full px-4 py-2 border rounded-2xl outline outline-offset-2 outline-blue-900"
+              className="block w-full px-4 py-2 border rounded-2xl outline outline-offset-2 outline-blue-900 bg-white text-black"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required

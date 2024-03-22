@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import useWebSocket from "../customHook/useWebSocket.ts";
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../store/hooks.ts";
@@ -6,7 +6,7 @@ import { selectUsername } from "../store/Slices/usernameSlice.ts";
 import {
   selectWebSocket,
   messageType,
-  setGameStart,
+  setIsConnected,
 } from "../store/Slices/webSocketSlice.ts";
 import ReadyIcon from "./ReadyIcon.tsx";
 import NotReadyIcon from "./NotReadyIcon.tsx";
@@ -24,19 +24,28 @@ const Circle = ({ color }: { color: string }) => {
 
 function WaitingRoom() {
   const dispatch = useAppDispatch();
-  const { sendPlayerStatus } = useWebSocket();
+  const { sendPlayerStatus, disconnect } = useWebSocket();
   const [playerStatus, setStatus] = useState<boolean>(false);
   const [onSettingPage, setOnSettingPage] = useState<boolean>(false);
   const [open, setOpenModal] = useState<boolean>(false);
+  const [openNotReady, setOpenModalNotReady] = useState<boolean>(false);
   const username = useAppSelector(selectUsername);
   const webSocketState = useAppSelector(selectWebSocket);
-  const myUser = webSocketState.onetime?.arr?.find(
+  const myUser = webSocketState.onetime?.user?.find(
     ({ sender }) => sender === username
   );
+
   return (
     <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-5">
       {webSocketState.gameStart ? (
-        <GamePage />
+        playerStatus ? (
+          <GamePage />
+        ) : (
+          (() => {
+            disconnect();
+            return null;
+          })()
+        )
       ) : (
         <div>
           {onSettingPage ? <SettingPage buttonState={setOnSettingPage} /> : ""}
@@ -45,7 +54,17 @@ function WaitingRoom() {
               open={open}
               onClose={() => setOpenModal(false)}
               header="Message from server"
-              content="Game require player more than 1 player to the start game."
+              content="Game requires more than 1 player to the start the game."
+            ></Modal>
+          ) : (
+            ""
+          )}
+          {openNotReady ? (
+            <Modal
+              open={openNotReady}
+              onClose={() => setOpenModalNotReady(false)}
+              header="Message from server"
+              content="Game requires at least 1 ready player to start the game."
             ></Modal>
           ) : (
             ""
@@ -55,9 +74,9 @@ function WaitingRoom() {
             <h2 className="font-beyonders select-none text-blue-900 text-2xl text-center py-3 mx-40 align-top">
               GAME ROOM
             </h2>
-            {webSocketState.onetime?.arr?.map((message, index) => {
+            {webSocketState.onetime?.user?.map((message, index) => {
               return (
-                <div className="flex flex-row my-5">
+                <div className="flex flex-row my-5" key={message.sender}>
                   {message.admin ? (
                     <div>
                       <Circle color="blue" />
@@ -84,12 +103,18 @@ function WaitingRoom() {
                     className="bg-green-500 text-white select-none hover:bg-white hover:ring hover:ring-green-600 hover:text-green-500 font-beyonders text-xm border px-6 py-4 rounded-3xl flex items-center justify-center mx-5"
                     onClick={() => {
                       let playerAmount: number | undefined =
-                        webSocketState.onetime?.arr?.length;
-                      if (playerAmount !== undefined) {
-                        if (playerAmount > 1) {
-                          dispatch(setGameStart(true));
-                          console.log(true);
-                          console.log(webSocketState.gameStart);
+                        webSocketState.onetime?.user?.length;
+                      let readyAmount: number | undefined =
+                        webSocketState.onetime?.readyPerson;
+                      if (
+                        playerAmount !== undefined &&
+                        readyAmount !== undefined
+                      ) {
+                        if (playerAmount > 1 && readyAmount > 0) {
+                          setStatus(true);
+                          sendPlayerStatus("start", username);
+                        } else if (playerAmount > 1 && readyAmount === 0) {
+                          setOpenModalNotReady(true);
                         } else {
                           setOpenModal(true);
                         }

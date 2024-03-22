@@ -10,7 +10,7 @@ interface SettingPageProp {
   buttonState: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-interface config {
+interface gameConfig {
   m?: string;
   n?: string;
   init_plan_min?: string;
@@ -30,26 +30,26 @@ function SettingPage({ buttonState }: SettingPageProp) {
       .then((response) => {
         setUserConfig(response.data);
       })
-      .catch((e) => console.log("error to call player api" + e));
+      .catch((e) => console.log("error to call config api" + e));
   }
 
-  async function callUserConfig() {
+  async function callAdminConfig() {
     await getUserConfig()
       .then((response) => {
         setUserConfig(response.data);
       })
-      .catch((e) => console.log("error to call player api" + e));
+      .catch((e) => console.log("error to call config api" + e));
   }
 
-  function updateUserConfig(user: config | undefined) {
+  function updateAdminConfig(user: gameConfig | undefined) {
     putUserConfig(user)
       .then()
-      .catch((e) => console.log("error to call player api" + e));
+      .catch((e) => console.log("error to call config api" + e));
   }
 
-  const [userConfig, setUserConfig] = useState<config>();
+  const [userConfig, setUserConfig] = useState<gameConfig>();
   useEffect(() => {
-    callUserConfig();
+    callAdminConfig();
   }, []);
 
   return (
@@ -58,7 +58,7 @@ function SettingPage({ buttonState }: SettingPageProp) {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            updateUserConfig(userConfig);
+            updateAdminConfig(userConfig);
             buttonState(false);
           }}
         >
@@ -243,4 +243,4 @@ function SettingPage({ buttonState }: SettingPageProp) {
 }
 
 export default SettingPage;
-export type { config };
+export type { gameConfig };

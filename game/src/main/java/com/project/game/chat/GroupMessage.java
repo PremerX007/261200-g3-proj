@@ -8,14 +8,16 @@ import java.util.ArrayList;
 @Getter
 @Setter
 public class GroupMessage {
-    private ArrayList<Message> arr;
-    private boolean empty;
+    private ArrayList<Message> user;
+//    private boolean empty;
+    private boolean isStart;
+    private int readyPerson;
     public GroupMessage(){
-        this.arr = new ArrayList<>();
-        this.empty = true;
+        this.user = new ArrayList<>();
+//        this.empty = true;
     }
     public void addMsg(Message msg){
-        arr.add(msg);
-        this.empty = false;
+        user.add(msg);
+//        this.empty = false;
     }
 }

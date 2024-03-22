@@ -1,4 +1,5 @@
-import React from "react";
+// @ts-ignore
+import React, { ReactElement } from "react";
 import {
   Button,
   Dialog,
@@ -6,24 +7,35 @@ import {
   DialogBody,
   DialogFooter,
 } from "@material-tailwind/react";
+import { size } from "@material-tailwind/react/types/components/avatar";
 
 type propTypes = {
   open: boolean;
   onClose: () => void;
+  size?: size;
   header: string;
-  content: string | undefined;
+  content?: string | undefined;
+  children?: ReactElement;
 };
 
-const Modal: React.FC<propTypes> = ({ open, onClose, header, content }) => {
+const Modal: React.FC<propTypes> = (prop) => {
   return (
-    <Dialog size={"xs"} open={open} handler={onClose} placeholder={""}>
-      <DialogHeader placeholder={""}>{header}</DialogHeader>
-      <DialogBody placeholder={""}>{content}</DialogBody>
+    <Dialog
+      size={prop.size ? prop.size : "xs"}
+      open={prop.open}
+      handler={prop.onClose}
+      placeholder={""}
+    >
+      <DialogHeader placeholder={""}>{prop.header}</DialogHeader>
+      <DialogBody placeholder={""}>
+        {prop.content}
+        {prop.children}
+      </DialogBody>
       <DialogFooter placeholder={""}>
         <Button
           variant="gradient"
           color="green"
-          onClick={onClose}
+          onClick={prop.onClose}
           placeholder={""}
         >
           <span>OK</span>

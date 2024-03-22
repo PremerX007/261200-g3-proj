@@ -11,22 +11,12 @@ import java.util.List;
 @Builder
 @Setter
 public class Message {
-    public static List<Message> user = new ArrayList<>();
     private String content;
     private String sender;
     private String timestamp;
     private MessageType type;
     private boolean admin;
-    public static void addUser(Message msg){
-        user.add(msg);
-    }
-    public static void removeUser(String msg){
-        user.removeIf(m -> m.getSender().equals(msg));
-    }
-    public static Message findUser(String us) {
-        return user.stream().filter(message -> us.equals(message.getSender()))
-                .findAny().orElse(null);
-    }
+    private boolean turn;
     public boolean getAdmin(){
         return this.admin;
     }

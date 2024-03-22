@@ -5,5 +5,6 @@ public enum MessageType {
     LEAVE,
     COMMAND,
     READY,
-    NOTREADY
+    NOTREADY,
+    START
 }
