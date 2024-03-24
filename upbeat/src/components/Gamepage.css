@@ -1,0 +1,12 @@
+.App {
+  text-align: center;
+}
+
+h1 {
+  color: #333;
+}
+
+.App div {
+  margin: 0 auto;
+  width: fit-content;
+}
