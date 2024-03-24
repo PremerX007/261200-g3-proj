@@ -9,6 +9,7 @@ import Modal from "./Modal.tsx";
 import TimerCom from "./TimerComLegacy.tsx";
 import { selectWebSocket } from "../store/Slices/webSocketSlice.ts";
 import { useAppSelector } from "../store/hooks.ts";
+import { Checkbox } from "@material-tailwind/react";
 
 function LoginPage() {
   const [username, setUsername] = useState<string>("");
@@ -24,7 +25,7 @@ function LoginPage() {
   setServer("http://localhost:8080");
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-5">
+    <div className="fixed top-0 left-0 w-full h-full flex flex-col justify-center items-center bg-black bg-opacity-5">
       <div className="bg-blue-200 p-8 rounded-2xl shadow-xl">
         <AnimateLogo />
         <h2 className="font-beyonders select-none text-blue-900 drop-shadow-xl text-5xl text-center mx-auto my-5 py-3">
@@ -36,8 +37,11 @@ function LoginPage() {
             open={open}
             onClose={() => setOpenModal(false)}
             header="Message from server"
-            content="You were kicked out of the waiting room. Because you weren't ready"
-          ></Modal>
+          >
+            <span>
+              You were kicked out of the waiting room. Because you weren't ready
+            </span>
+          </Modal>
         ) : (
           ""
         )}
@@ -47,8 +51,9 @@ function LoginPage() {
             open={open}
             onClose={() => setOpenModal(false)}
             header="Message from server"
-            content="The game is in progress. Please wait for the next turn."
-          ></Modal>
+          >
+            <span>The game is in progress. Please wait for the next turn.</span>
+          </Modal>
         ) : (
           ""
         )}
@@ -58,22 +63,27 @@ function LoginPage() {
             open={open}
             onClose={() => setOpenModal(false)}
             header="Message from server"
-            content="Player username must be less than 20 character."
-          ></Modal>
+          >
+            <span>Player username must be less than 20 character.</span>
+          </Modal>
         ) : isFullPlayer ? (
           <Modal
             open={open}
             onClose={() => setOpenModal(false)}
             header="Message from server"
-            content="Waiting room is full. Please wait a moment."
-          ></Modal>
+          >
+            <span>Waiting room is full. Please wait a moment.</span>
+          </Modal>
         ) : isDuplicatePlayer ? (
           <Modal
             open={open}
             onClose={() => setOpenModal(false)}
             header="Message from server"
-            content="Player username is already, please user another username."
-          ></Modal>
+          >
+            <span>
+              Player username is already, please user another username.
+            </span>
+          </Modal>
         ) : (
           ""
         )}
@@ -142,6 +152,17 @@ function LoginPage() {
           </div>
         </form>
       </div>
+      <p className="text-center text-gray-500 text-xs pt-7">
+        &copy;2024 Project Mai Sed Corperation <br />
+        Thank for{" "}
+        <a
+          href="https://codesandbox.io/p/sandbox/logo-animation-08v8e?file=%2Fsrc%2Fcomponents%2Fparts%2FPupil.tsx"
+          target="_blank"
+          style={{ color: "gray" }}
+        >
+          sQve tower animation
+        </a>
+      </p>
     </div>
   );
 }

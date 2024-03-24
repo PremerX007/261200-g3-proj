@@ -23,7 +23,6 @@ const Circle = ({ color }: { color: string }) => {
 };
 
 function WaitingRoom() {
-  const dispatch = useAppDispatch();
   const { sendPlayerStatus, disconnect } = useWebSocket();
   const [playerStatus, setStatus] = useState<boolean>(false);
   const [onSettingPage, setOnSettingPage] = useState<boolean>(false);
@@ -54,8 +53,11 @@ function WaitingRoom() {
               open={open}
               onClose={() => setOpenModal(false)}
               header="Message from server"
-              content="Game requires more than 1 player to the start the game."
-            ></Modal>
+            >
+              <span>
+                Game requires more than 1 player to the start the game.
+              </span>
+            </Modal>
           ) : (
             ""
           )}
@@ -64,8 +66,11 @@ function WaitingRoom() {
               open={openNotReady}
               onClose={() => setOpenModalNotReady(false)}
               header="Message from server"
-              content="Game requires at least 1 ready player to start the game."
-            ></Modal>
+            >
+              <span>
+                Game requires at least 1 ready player to start the game.
+              </span>
+            </Modal>
           ) : (
             ""
           )}

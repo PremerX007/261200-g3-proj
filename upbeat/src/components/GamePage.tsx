@@ -7,6 +7,7 @@ import {
   postConstCheck,
   postInitConst,
   postNewConst,
+  postReuseStatus,
 } from "../repositories/restApi";
 import Modal from "./Modal";
 import Logo from "../assets/icon.png";
@@ -19,9 +20,11 @@ import {
   GameData,
   player,
   commandType,
+  region,
 } from "../store/Slices/webSocketSlice.ts";
 import TimerCom from "./Timer.tsx";
 import { gameConfig } from "./SettingPage.tsx";
+import { Checkbox, Typography } from "@material-tailwind/react";
 
 const Circle = ({ color }: { color: string }) => {
   return (
@@ -209,28 +212,45 @@ function GamePage() {
     min: 4,
     sec: 0,
   });
-  const [openmodalState, setOpenModalState] = useState(true);
+  const [openmodalStateInit, setOpenModalStateInit] = useState(true);
+  const [openmodalStateGame, setOpenModalStateGame] = useState(true);
   const handleActiveInitPlan = () => {
     setIsInitPlan(!isInitPlan);
   };
-  const playerList: player[] | undefined = webSocketState.gamedata?.playerlist;
+
+  const [reusePlan, setReusePlan] = useState(false);
+  const [region, setRegion] = useState<region>();
+  const [reghover, setRegHover] = useState(false);
+  const [checkboxReuseplan, setCheckboxReuseplan] = useState(false);
+  const president = webSocketState.gamedata?.playerlist.find(
+    (e) => e.name === username
+  );
+  const whonowturn = webSocketState.gamedata?.playerlist.find(
+    (e) => e.name === webSocketState.gamestate?.nowturn
+  );
+
+  useEffect(() => {
+    if (webSocketState.gamestate?.nowturn === username) {
+      setCheckboxReuseplan(true);
+    }
+  }, [webSocketState.gamestate?.nowturn]);
 
   return (
     <div className="h-screen w-screen flex flex-col justify-center items-center bg-white">
       {webSocketState.gamestate?.command === commandType.INIT ? (
         <Modal
-          open={openmodalState}
-          onClose={() => setOpenModalState(false)}
+          open={openmodalStateInit}
+          onClose={() => setOpenModalStateInit(false)}
           header="Message from server"
         >
           <div className="text-3xl">Init Constrction plan time</div>
         </Modal>
       ) : webSocketState.gamestate?.command === commandType.GAME ? (
         <>
-          {setOpenModalState(true)}
+          {() => setOpenModalStateGame(true)}
           <Modal
-            open={openmodalState}
-            onClose={() => setOpenModalState(false)}
+            open={openmodalStateGame}
+            onClose={() => setOpenModalStateGame(false)}
             header="Message from server"
           >
             <div className="text-3xl">Game start</div>
@@ -242,7 +262,7 @@ function GamePage() {
 
       {starterHelpModal ? (
         <Modal
-          open={open}
+          open={starterHelpModal}
           size={"md"}
           onClose={() => {
             setOpenModal(false);
@@ -297,8 +317,9 @@ function GamePage() {
           open={open}
           onClose={() => setOpenModal(false)}
           header="Message from server"
-          content={msgFromServer}
-        ></Modal>
+        >
+          <span>{msgFromServer}</span>
+        </Modal>
       ) : (
         ""
       )}
@@ -331,17 +352,84 @@ function GamePage() {
       </div>
       <div className="flex flex-row w-full h-full justify-between">
         <div className="flex flex-col justify-start w-full h-full">
-          <div className="bg-blue-500 flex flex-col h-4/6 px-5 py-5">
-            <h4 className="font-beyonders text-white text-xm">Player</h4>
+          <div className="bg-[#cecefd] flex flex-col h-3/6 px-5 py-5">
+            <h2 className="font-beyonders text-black text-xm mb-4">Player</h2>
+            <h4 className="font-concert text-black text-2xl pb-2">
+              Name :{" "}
+              {president !== undefined
+                ? president?.name.toLocaleUpperCase()
+                : "null"}
+            </h4>
+            <h4 className="font-concert text-black text-2xl pb-2">
+              Budget :{" "}
+              {president !== undefined
+                ? Math.ceil(president?.budget).toLocaleString()
+                : "null"}
+            </h4>
+            <h4 className="font-concert text-black text-2xl pb-2">
+              My Regions :{" "}
+              {president !== undefined
+                ? Math.ceil(president?.ownCity).toLocaleString()
+                : "null"}
+            </h4>
+            <div className="font-concert text-black text-2xl pb-2 flex flex-row">
+              <span className="pr-3">Citycenter :</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="26" height="30">
+                <polygon
+                  points="12,2 24,24 2,24"
+                  fill="lime"
+                  style={{ strokeWidth: "0.8", stroke: "#000000" }}
+                />
+              </svg>
+            </div>
+            <div className="font-concert text-black text-2xl pb-2 flex flex-row">
+              <span className="pr-3">Crew :</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="27" height="30">
+                <circle
+                  cx="14"
+                  cy="18"
+                  r="12"
+                  fill={president?.crewColor}
+                  style={{ strokeWidth: "0.8", stroke: "#000000" }}
+                />
+              </svg>
+            </div>
           </div>
 
-          <div className="bg-blue-100 flex flex-col h-2/6 px-5 py-5">
+          <div className="bg-blue-800 font-concert flex flex-col h-1/6 px-5 py-5 justify-center">
+            {reghover ? (
+              <div className="text-white text-2xl">
+                <h2>
+                  Region Position : [{region?.row},{region?.col}]
+                </h2>
+                <span>
+                  {"President : "}
+                  {region?.president === null
+                    ? "** No player **"
+                    : region?.president.toUpperCase()}
+                  <br></br>
+                </span>
+                <span>
+                  {"Deposit : "}
+                  {region?.president === username || region?.president === null
+                    ? Math.ceil(region?.deposit)
+                    : "*****"}
+                </span>
+              </div>
+            ) : (
+              <span className="text-white text-center align-middle text-2xl">
+                [ Hover Hexagon To See Infomation ]
+              </span>
+            )}
+          </div>
+
+          <div className="bg-[#E6E6FA] flex flex-col h-2/6 px-5 py-5">
             <h4 className="font-beyonders text-black text-xm">Player turn</h4>
             <div className="flex flex-col my-3">
               {webSocketState.gamedata?.playerlist.map((player) => {
                 return (
                   <div className="flex flex-row" key={player.name}>
-                    <Circle color={player.color} />
+                    <Circle color={player.playerColor} />
                     {webSocketState.gamestate ? (
                       webSocketState.gamestate.command === commandType.INIT ? (
                         player.constInit ? (
@@ -352,9 +440,20 @@ function GamePage() {
                       ) : null
                     ) : null}
 
-                    <h3 className="ml-4 text-black font-concert text-center text-2xl align-middle">
+                    <p className="ml-4 text-black font-concert text-center text-2xl align-middle mr-2">
                       {player.name.toUpperCase()}
-                    </h3>
+                    </p>
+                    {webSocketState.gamestate ? (
+                      webSocketState.gamestate.command === commandType.GAME ? (
+                        player.myTurn ? (
+                          <span role="img" className="text-2xl">
+                            👈
+                          </span>
+                        ) : (
+                          ""
+                        )
+                      ) : null
+                    ) : null}
                   </div>
                 );
               })}
@@ -378,12 +477,12 @@ function GamePage() {
                 <g style={{ position: "absolute" }}>
                   {webSocketState.gamedata !== undefined
                     ? hexgrid9(webSocketState.gamedata).map((hex, i) => {
-                        const president =
+                        const regpresident =
                           webSocketState.gamedata?.playerlist.find(
                             (e) => e.name === hex.reg.president
                           );
-                        const colorfill = president
-                          ? president.color
+                        const colorfill = regpresident
+                          ? regpresident.playerColor
                           : "#E6E6FA";
                         return (
                           <Hexagon
@@ -395,17 +494,47 @@ function GamePage() {
                               fill: colorfill,
                               strokeWidth: "0.1",
                               stroke: "#000000",
+                              fillOpacity:
+                                reghover &&
+                                region ===
+                                  webSocketState.gamedata?.territory[hex.i][
+                                    hex.j
+                                  ]
+                                  ? 0.5
+                                  : 1,
+                              transition: "fill-opacity 0.15s ease",
                             }}
                             onMouseOver={() => {
-                              console.log(hex.i + " " + hex.j);
+                              setRegion(
+                                webSocketState.gamedata?.territory[hex.i][hex.j]
+                              );
+                              setRegHover(true);
                             }}
+                            onMouseLeave={() => setRegHover(false)}
                           >
                             {hex.reg.crew ? (
-                              <circle cx="0" cy="0" r="2.5" fill="red" />
+                              username === hex.reg.president ? (
+                                <circle
+                                  cx="0"
+                                  cy="0"
+                                  r="2.5"
+                                  fill={regpresident?.crewColor}
+                                />
+                              ) : hex.reg.president === null ? (
+                                <circle
+                                  cx="0"
+                                  cy="0"
+                                  r="2.5"
+                                  fill={whonowturn?.crewColor}
+                                />
+                              ) : (
+                                ""
+                              )
                             ) : (
                               ""
                             )}
-                            {hex.reg.president ? (
+                            {hex.reg.cityCenter &&
+                            username === regpresident?.name ? (
                               <polygon points="0,-2.5 -2,2 2,2" fill="lime" />
                             ) : (
                               ""
@@ -443,7 +572,38 @@ function GamePage() {
 
         <div className="flex flex-col justify-end items-end w-full">
           <div className="w-full h-4/6 items-end bg-black">fdgd</div>
-          <div className="bg-blue-100 w-full h-2/6 px-4 py-8 flex flex-col items-center">
+          <div className="bg-blue-100 w-full h-2/6 px-4 py-3 flex-col justify-center">
+            <div className="flex items-center justify-center mx-auto">
+              {checkboxReuseplan ? (
+                <Checkbox
+                  crossOrigin={undefined}
+                  className="border-black"
+                  defaultChecked
+                  onClick={async () => {
+                    setReusePlan(!reusePlan);
+                    console.log(reusePlan);
+                    await postReuseStatus(
+                      JSON.stringify({
+                        sender: username,
+                        reuse: reusePlan,
+                        status: "",
+                      })
+                    );
+                  }}
+                  label={
+                    <div>
+                      <Typography
+                        color="black"
+                        className="font-medium"
+                        placeholder={""}
+                      >
+                        Reuse Plan
+                      </Typography>
+                    </div>
+                  }
+                />
+              ) : null}
+            </div>
             <button
               type="button"
               className="bg-blue-900 text-white select-none hover:bg-white hover:ring hover:ring-blue-900 hover:text-blue-900 font-beyonders text-xm border px-6 py-3 rounded-3xl flex items-center justify-center mx-auto my-2"
@@ -457,43 +617,51 @@ function GamePage() {
             >
               check plan
             </button>
-            <button
-              type="button"
-              className="bg-green-500 text-white select-none hover:bg-white hover:ring hover:ring-green-600 hover:text-green-500 font-beyonders text-xm border px-6 py-3 rounded-3xl flex items-center justify-center mx-auto my-2"
-              onClick={async () => {
-                if (webSocketState.gamestate?.command === commandType.INIT) {
-                  await postInitConst(
-                    JSON.stringify({
-                      sender: username,
-                      plan: typedPlan,
-                      time_min: window.localStorage.getItem("countdownMinutes"),
-                      time_sec: window.localStorage.getItem("countdownSeconds"),
-                    })
-                  )
-                    .then((res) => setMessageFromServer(res.data.result))
-                    .catch((e) => alert(e));
-                  setOperateCheckplan(true);
-                  setOpenModal(true);
-                } else if (
-                  webSocketState.gamestate?.command === commandType.GAME
-                ) {
-                  await postNewConst(
-                    JSON.stringify({
-                      sender: username,
-                      plan: typedPlan,
-                      time_min: window.localStorage.getItem("countdownMinutes"),
-                      time_sec: window.localStorage.getItem("countdownSeconds"),
-                    })
-                  )
-                    .then((res) => setMessageFromServer(res.data.result))
-                    .catch((e) => alert(e));
-                  setOperateCheckplan(true);
-                  setOpenModal(true);
-                }
-              }}
-            >
-              sent
-            </button>
+            {webSocketState.gamestate?.command === commandType.INIT ||
+            (webSocketState.gamestate?.nowturn === username &&
+              !webSocketState.gamestate.reusePlan) ? (
+              <button
+                type="button"
+                className="bg-green-500 text-white select-none hover:bg-white hover:ring hover:ring-green-600 hover:text-green-500 font-beyonders text-xm border px-6 py-3 rounded-3xl flex items-center justify-center mx-auto my-2"
+                onClick={async () => {
+                  if (webSocketState.gamestate?.command === commandType.INIT) {
+                    await postInitConst(
+                      JSON.stringify({
+                        sender: username,
+                        plan: typedPlan,
+                        time_min:
+                          window.localStorage.getItem("countdownMinutes"),
+                        time_sec:
+                          window.localStorage.getItem("countdownSeconds"),
+                      })
+                    )
+                      .then((res) => setMessageFromServer(res.data.result))
+                      .catch((e) => alert(e));
+                    setOperateCheckplan(true);
+                    setOpenModal(true);
+                  } else if (
+                    webSocketState.gamestate?.command === commandType.GAME
+                  ) {
+                    await postNewConst(
+                      JSON.stringify({
+                        sender: username,
+                        plan: typedPlan,
+                        time_min:
+                          window.localStorage.getItem("countdownMinutes"),
+                        time_sec:
+                          window.localStorage.getItem("countdownSeconds"),
+                      })
+                    )
+                      .then((res) => setMessageFromServer(res.data.result))
+                      .catch((e) => alert(e));
+                    setOperateCheckplan(true);
+                    setOpenModal(true);
+                  }
+                }}
+              >
+                sent
+              </button>
+            ) : null}
           </div>
         </div>
       </div>

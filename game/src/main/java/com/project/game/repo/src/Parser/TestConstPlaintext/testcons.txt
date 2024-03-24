@@ -1,0 +1,16 @@
+t = 5
+t = t + 3     # t = 8
+m = 35
+k = 2
+while (t) {
+    m = m + t
+
+    if (t - 1) then j = j + 1
+    else {
+        j = j + 100
+        m = m-5
+        k =  5 * 7 + 1
+    }
+
+    t = t - 1
+}

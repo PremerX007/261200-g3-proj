@@ -18,6 +18,7 @@ public class PlayerList {
     public static void removeUser(String msg){
         user.removeIf(m -> m.getSender().equals(msg));
     }
+    public static void assignUser(List<Message> list) { user = list; }
     public static Message findUser(String us) {
         return user.stream().filter(message -> us.equals(message.getSender()))
                 .findAny().orElse(null);

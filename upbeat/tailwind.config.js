@@ -9,6 +9,9 @@ export default withMT({
         beyonders: ["beyonders", "san"],
         concert: ["Concert One", "sans-serif"],
       },
+      color: {
+        "blue-purple": "#E6E6FA",
+      },
     },
   },
   plugins: [],

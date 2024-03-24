@@ -6,6 +6,12 @@ interface constRest {
   result?: string;
 }
 
+interface reusePlanRest {
+  sender: string;
+  reuse: boolean;
+  status?: string;
+}
+
 export type Response<T> = Promise<AxiosResponse<T>>;
 function getAxiosInstance() {
   return axios.create({ baseURL: getServer() });
@@ -37,7 +43,15 @@ export async function postInitConst(
 export async function postNewConst(
   msg: string | undefined
 ): Response<constRest> {
-  return getAxiosInstance().post(`/game/plan/setter`, msg, {
+  return getAxiosInstance().post(`/game/plan/set`, msg, {
+    headers: { "Content-Type": "application/json" },
+  });
+}
+
+export async function postReuseStatus(
+  msg: string | undefined
+): Response<reusePlanRest> {
+  return getAxiosInstance().post(`/game/plan/reuse`, msg, {
     headers: { "Content-Type": "application/json" },
   });
 }

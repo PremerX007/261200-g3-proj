@@ -24,6 +24,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -101,13 +103,14 @@ public class GameRoomController {
         if(message.getType() == MessageType.START){
             g.setStart(true);
             tmp.setType(MessageType.READY);
+            List<Message> tmpList = new ArrayList<>();
             for(Message u: PlayerList.user){
-                if(u.getType().equals(MessageType.NOTREADY) || u.getType().equals(MessageType.JOIN)) {
-                    PlayerList.removeUser(u.getSender());
-                }else{
+                if(u.getType().equals(MessageType.READY)) {
                     g.addMsg(u);
+                    tmpList.add(u);
                 }
             }
+            PlayerList.assignUser(tmpList);
         }else{
             tmp.setType(message.getType());
             int readyAmount = 0;
@@ -123,7 +126,7 @@ public class GameRoomController {
 
     public void GameInitial() throws LexicalError, SyntaxError, EvalError, IOException, InterruptedException {
         // game init
-        Game.instance();
+        Game.instance(gameService);
         gameService.sendGameData();
 
         // init construction plan signal
@@ -154,6 +157,18 @@ public class GameRoomController {
     public void test(){
         log.info("hallo");
         throw new ResponseStatusException(HttpStatus.OK, "OK200");
+    }
+
+    @PostMapping("game/plan/reuse")
+    public RestReusePlan reusePlan(@RequestBody RestReusePlan body){
+        Player player = Game.instance.findPlayer(body.getSender());
+        player.setUseOldStatement(body.isReuse());
+        if(body.isReuse())
+            log.info("Player \""+ body.getSender() +"\" reuse plan");
+        else
+            log.info("Player \""+ body.getSender() +"\" need to change plan");
+        body.setStatus(body.isReuse() ? "Reuse old construction plan" : "You don't want to reuse old construction plan");
+        return body;
     }
 
     @PostMapping("game/plan/init")
@@ -188,12 +203,22 @@ public class GameRoomController {
         if(Game.instance.playerInitAll()){
             while (Game.instance.nowTurn().isUseOldStatement()) {
                 Player p = Game.instance.nowTurn();
-                var tmp = GameState.builder().command(CommandType.GAME).nowturn(p.getName()).build();
+                var tmp = GameState.builder()
+                        .command(CommandType.GAME)
+                        .nowturn(p.getName())
+                        .reusePlan(p.isUseOldStatement())
+                        .build();
                 gameService.sendGameState(tmp);
                 if(p.getStatement() != null) p.run();
                 Game.instance.nextTurn();
+                gameService.sendGameData();
+                Thread.sleep(3000);
             }
-            var tmp = GameState.builder().command(CommandType.GAME).nowturn(Game.instance.nowTurn().getName()).build();
+            var tmp = GameState.builder()
+                    .command(CommandType.GAME)
+                    .nowturn(Game.instance.nowTurn().getName())
+                    .reusePlan(Game.instance.nowTurn().isUseOldStatement())
+                    .build();
             gameService.sendGameState(tmp);
         }
     }

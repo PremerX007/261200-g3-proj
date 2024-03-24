@@ -10,4 +10,5 @@ import lombok.Setter;
 public class GameState {
     private CommandType command;
     private String nowturn;
+    private boolean reusePlan;
 }

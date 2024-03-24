@@ -1,0 +1,11 @@
+a = 1
+b = 2
+deposit = 10000000
+rows = 50
+cols = 75
+currow = 365
+curcol = 7000
+budget = 500500
+int = 1
+maxdeposit = 999999
+random = 3000

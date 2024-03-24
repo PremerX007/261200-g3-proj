@@ -20,6 +20,7 @@ export enum commandType {
 interface GameState {
   command: commandType;
   nowturn: string;
+  reusePlan: boolean;
 }
 
 interface GameData {
@@ -31,15 +32,13 @@ interface player {
   name: string;
   ownCity: number;
   budget: number;
+  turnNum: number;
   lose: boolean;
-  color: string;
+  playerColor: string;
+  crewColor: string;
   constInit: boolean;
   myTurn: boolean;
   useOldStatement: boolean;
-}
-
-interface territory {
-  reg: region[][];
 }
 
 interface region {
@@ -123,5 +122,5 @@ export const {
   setGameStateSignal,
 } = webSocketSlice.actions;
 export default webSocketSlice.reducer;
-export type { groupMessage, GameData, player };
+export type { groupMessage, GameData, player, region };
 export const selectWebSocket = (state: RootState) => state.webSocket;

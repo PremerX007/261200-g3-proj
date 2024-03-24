@@ -13,7 +13,9 @@ public class PlayerRest {
     private int ownCity;
     private long budget;
     private boolean lose;
-    private String color;
+    private String playerColor;
+    private String crewColor;
+    private int turnNum;
     private boolean constInit;
     private boolean myTurn;
 }

@@ -1,0 +1,5 @@
+num = 5
+num = num + 7
+time = 2
+time = time ^ 2
+tm = 9 * 5

@@ -9,15 +9,12 @@ import java.util.ArrayList;
 @Setter
 public class GroupMessage {
     private ArrayList<Message> user;
-//    private boolean empty;
     private boolean isStart;
     private int readyPerson;
     public GroupMessage(){
         this.user = new ArrayList<>();
-//        this.empty = true;
     }
     public void addMsg(Message msg){
         user.add(msg);
-//        this.empty = false;
     }
 }

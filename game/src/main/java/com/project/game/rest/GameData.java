@@ -38,8 +38,10 @@ public class GameData {
                     .ownCity(player.getOwnCity().size())
                     .budget(player.getBudget())
                     .lose(!player.status())
-                    .color(player.getCitycolor())
+                    .playerColor(player.getCitycolor())
+                    .crewColor(player.getCrewColor())
                     .constInit(player.isConstInit())
+                    .turnNum(player.getTurn_number())
                     .myTurn(player.isMyturn()).build());
         }
     }

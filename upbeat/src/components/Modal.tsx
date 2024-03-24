@@ -1,4 +1,3 @@
-// @ts-ignore
 import React, { ReactElement } from "react";
 import {
   Button,
@@ -7,14 +6,14 @@ import {
   DialogBody,
   DialogFooter,
 } from "@material-tailwind/react";
-import { size } from "@material-tailwind/react/types/components/avatar";
+import { size } from "@material-tailwind/react/types/components/dialog";
 
 type propTypes = {
   open: boolean;
   onClose: () => void;
   size?: size;
   header: string;
-  content?: string | undefined;
+  // content?: string | undefined;
   children?: ReactElement;
 };
 
@@ -28,7 +27,7 @@ const Modal: React.FC<propTypes> = (prop) => {
     >
       <DialogHeader placeholder={""}>{prop.header}</DialogHeader>
       <DialogBody placeholder={""}>
-        {prop.content}
+        {/* {prop.content} */}
         {prop.children}
       </DialogBody>
       <DialogFooter placeholder={""}>
