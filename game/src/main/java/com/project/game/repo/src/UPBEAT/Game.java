@@ -12,7 +12,6 @@ import com.project.game.repo.src.Tokenizer.LexicalError;
 import com.project.game.repo.src.Tokenizer.SyntaxError;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
@@ -30,7 +29,6 @@ public class Game {
     private LinkedList<String> crewColor = new LinkedList<>();
     @Getter
     private List<Player> playerList = new ArrayList<>(); //dev future
-    private Territory territory;
     private long init_plan_min;
     private long init_plan_sec;
     private long plan_rev_min;
@@ -76,17 +74,10 @@ public class Game {
     }
 
     public void start() throws LexicalError, SyntaxError, IOException, EvalError {
-        Territory.instance = null;
         Territory.instance(row, col, max_dep, interest_pct, template);
-        // sandbox test
         for(Message msg: PlayerList.user){
             playerList.add(createPlayer(msg.getSender()));
         }
-
-        // Init Construction Plan
-
-
-        // wait user sent construction plan (check until ready all)
     }
 
     public boolean playerInitAll(){

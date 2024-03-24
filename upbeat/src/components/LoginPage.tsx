@@ -6,10 +6,8 @@ import { setUsername as sliceSetUsername } from "../store/Slices/usernameSlice.t
 import { getPlayer, setServer } from "../repositories/restApi.ts";
 import { groupMessage } from "../store/Slices/webSocketSlice.ts";
 import Modal from "./Modal.tsx";
-import TimerCom from "./TimerComLegacy.tsx";
 import { selectWebSocket } from "../store/Slices/webSocketSlice.ts";
 import { useAppSelector } from "../store/hooks.ts";
-import { Checkbox } from "@material-tailwind/react";
 
 function LoginPage() {
   const [username, setUsername] = useState<string>("");
@@ -153,7 +151,7 @@ function LoginPage() {
         </form>
       </div>
       <p className="text-center text-gray-500 text-xs pt-7">
-        &copy;2024 Project Mai Sed Corperation <br />
+        &copy;2024 Project Mai Sed Corporation <br />
         Thank for{" "}
         <a
           href="https://codesandbox.io/p/sandbox/logo-animation-08v8e?file=%2Fsrc%2Fcomponents%2Fparts%2FPupil.tsx"

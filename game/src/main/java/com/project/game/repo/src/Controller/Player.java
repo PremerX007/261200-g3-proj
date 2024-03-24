@@ -18,39 +18,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Getter
+@Setter
 public class Player {
-    @Getter
     private List<Region> ownCity = new ArrayList<>();
     private Map<String, Long> iden = new HashMap<>();
-    @Getter
     private long budget;
-    @Setter
     private Tokenizer tkz;
-    @Setter
-    @Getter
     private Statement statement;
-    @Getter
     private boolean done;
     private boolean status = true;
-    @Getter
     private Position position;
     private Crew crew;
-    @Getter
     private String name;
-    @Getter
     private String citycolor;
-    @Getter
     private String crewColor;
-    @Getter
     private int turn_number = 1;
-    @Getter
-    @Setter
     private boolean myturn;
-    @Setter
-    @Getter
     private boolean constInit;
-    @Setter
-    @Getter
     private boolean useOldStatement;
 
     public Player(String name, Position init_pos, long init_budget, String citycolor, String crewColor) throws LexicalError, IOException, SyntaxError {

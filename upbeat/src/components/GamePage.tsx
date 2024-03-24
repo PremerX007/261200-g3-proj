@@ -9,11 +9,6 @@ import {
   postNewConst,
   postReuseStatus,
 } from "../repositories/restApi";
-import Modal from "./Modal";
-import Logo from "../assets/icon.png";
-import useWebSocket from "../customHook/useWebSocket.ts";
-import { useAppDispatch, useAppSelector } from "../store/hooks.ts";
-import { selectUsername } from "../store/Slices/usernameSlice.ts";
 import {
   selectWebSocket,
   messageType,
@@ -22,9 +17,15 @@ import {
   commandType,
   region,
 } from "../store/Slices/webSocketSlice.ts";
-import TimerCom from "./Timer.tsx";
+import Modal from "./Modal";
+import { useAppSelector } from "../store/hooks.ts";
+import { selectUsername } from "../store/Slices/usernameSlice.ts";
 import { gameConfig } from "./SettingPage.tsx";
 import { Checkbox, Typography } from "@material-tailwind/react";
+import InitPlanGif from "../assets/oggy.gif";
+import GameStartGif from "../assets/running.gif";
+import TurnGif from "../assets/think.gif";
+import TimerCom from "./Timer.tsx";
 
 const Circle = ({ color }: { color: string }) => {
   return (
@@ -194,29 +195,15 @@ function GamePage() {
   const [typedPlan, setTypedPlan] = useState<string | undefined>(
     "# Write your construction plan here"
   );
-  const [userConfig, setUserConfig] = useState<gameConfig>();
   const username = useAppSelector(selectUsername);
   const webSocketState = useAppSelector(selectWebSocket);
 
   const [isRevPlan, setIsRevPlan] = useState(false);
   const [starterHelpModal, setStarterModal] = useState(true);
-  const [timeRev, setTimeRev] = useState({
-    min: 2,
-    sec: 0,
-  });
-  const handleActiveRevPlan = () => {
-    setIsRevPlan(!isRevPlan);
-  };
   const [isInitPlan, setIsInitPlan] = useState(false);
-  const [timeInitPlan, setTimeInitPlan] = useState({
-    min: 4,
-    sec: 0,
-  });
   const [openmodalStateInit, setOpenModalStateInit] = useState(true);
   const [openmodalStateGame, setOpenModalStateGame] = useState(true);
-  const handleActiveInitPlan = () => {
-    setIsInitPlan(!isInitPlan);
-  };
+  const [openmodalTurnGame, setOpenModalTurnGame] = useState(true);
 
   const [reusePlan, setReusePlan] = useState(false);
   const [region, setRegion] = useState<region>();
@@ -229,6 +216,21 @@ function GamePage() {
     (e) => e.name === webSocketState.gamestate?.nowturn
   );
 
+  const [userConfig, setUserConfig] = useState<gameConfig>();
+  const handleActiveInitPlan = () => {
+    setIsInitPlan(!isInitPlan);
+  };
+  const [timeInitPlan, setTimeInitPlan] = useState({
+    min: 4,
+    sec: 0,
+  });
+  const [timeRev, setTimeRev] = useState({
+    min: 2,
+    sec: 0,
+  });
+  const handleActiveRevPlan = () => {
+    setIsRevPlan(!isRevPlan);
+  };
   useEffect(() => {
     if (webSocketState.gamestate?.nowturn === username) {
       setCheckboxReuseplan(true);
@@ -241,9 +243,15 @@ function GamePage() {
         <Modal
           open={openmodalStateInit}
           onClose={() => setOpenModalStateInit(false)}
-          header="Message from server"
+          header=""
         >
-          <div className="text-3xl">Init Constrction plan time</div>
+          <div className="flex flex-col justify-center items-center">
+            <img src={InitPlanGif} alt="oggy" className="rounded-3xl mb-5" />
+            <p className="text-3xl text-gray-700 font-bold">
+              Initial Constrction Plan
+            </p>
+            <p className="text-xm">Use your imagination to design it 😆</p>
+          </div>
         </Modal>
       ) : webSocketState.gamestate?.command === commandType.GAME ? (
         <>
@@ -251,9 +259,42 @@ function GamePage() {
           <Modal
             open={openmodalStateGame}
             onClose={() => setOpenModalStateGame(false)}
-            header="Message from server"
+            header=""
           >
-            <div className="text-3xl">Game start</div>
+            <div className="flex flex-col justify-center items-center">
+              <img
+                src={GameStartGif}
+                alt="running"
+                className="rounded-3xl mb-5"
+              />
+              <p className="text-3xl text-gray-700 font-bold">Game Start</p>
+              <p className="text-xm">
+                Quickly press OK and go see your crew 🚩
+              </p>
+            </div>
+          </Modal>
+        </>
+      ) : (
+        ""
+      )}
+
+      {webSocketState.gamestate?.command === commandType.GAME &&
+      webSocketState.gamestate?.nowturn === username &&
+      !webSocketState.gamestate?.reusePlan ? (
+        <>
+          {() => setOpenModalTurnGame(true)}
+          <Modal
+            open={openmodalTurnGame}
+            onClose={() => setOpenModalTurnGame(false)}
+            header=""
+          >
+            <div className="flex flex-col justify-center items-center">
+              <img src={TurnGif} alt="thinking" className="rounded-3xl mb-5" />
+              <p className="text-3xl text-gray-700 font-bold">
+                This is your turn
+              </p>
+              <p className="text-xm">Was your old plan bad? Think again 😱🤔</p>
+            </div>
           </Modal>
         </>
       ) : (
@@ -271,14 +312,53 @@ function GamePage() {
           header="Welcome"
         >
           <>
-            <div className="flex flex-row items-center">
-              <span>First, this is button you should know</span>
+            <div className="flex flex-row items-center overflow-y-auto max-h-96">
+              <span className="text-black">
+                First, this is button you should know
+              </span>
               <span className="font-bold px-1 text-red-500">
                 You can read this again in help button
               </span>
               <HelpIcon height={30} width={30} />
             </div>
-            <div className="flex flex-row">
+            <div className="flex flex-row my-2 mt-5">
+              <div className="px-20 justify-center flex items-center">
+                <Checkbox
+                  crossOrigin={undefined}
+                  className="border-black"
+                  defaultChecked
+                  label={
+                    <div>
+                      <Typography
+                        color="black"
+                        className="font-medium"
+                        placeholder={""}
+                      >
+                        Reuse Plan
+                      </Typography>
+                    </div>
+                  }
+                />
+              </div>
+              <div className="inline-block align-middle pl-6">
+                <span className="text-black">
+                  If you need to reuse old plan. Select this.
+                </span>
+                <br />
+                <span className="text-blue-900">
+                  (when your turn will auto eval construction plan)
+                </span>
+                <br />
+                <span className="text-black">
+                  If you need to sent new plan. Unselect this.
+                </span>
+                <br />
+                <span className="text-pink-500">
+                  (this checkbox will show after first turn)
+                </span>
+              </div>
+            </div>
+            <div className="flex flex-row my-2">
               <div className="px-11">
                 <button
                   type="button"
@@ -288,7 +368,9 @@ function GamePage() {
                 </button>
               </div>
               <div className="inline-block align-middle mt-5">
-                <span>Check your construction plan while not your turn</span>
+                <span className="text-black">
+                  Check your construction plan while not your turn.
+                </span>
               </div>
             </div>
             <div className="flex flex-row">
@@ -301,9 +383,11 @@ function GamePage() {
                 </button>
               </div>
               <div className="inline-block align-middle mt-2">
-                <span>Sent your construction plan</span>
+                <span className="text-black">Sent your construction plan.</span>
                 <br />
-                <span>(this button will not show if not your turn)</span>
+                <span className="text-red-500">
+                  (this button will not show if not your turn)
+                </span>
               </div>
             </div>
           </>
@@ -315,7 +399,10 @@ function GamePage() {
       {opCheckPlan ? (
         <Modal
           open={open}
-          onClose={() => setOpenModal(false)}
+          onClose={() => {
+            setOpenModal(false);
+            setOperateCheckplan(false);
+          }}
           header="Message from server"
         >
           <span>{msgFromServer}</span>
@@ -324,7 +411,7 @@ function GamePage() {
         ""
       )}
 
-      <div className="flex flex-row items-center justify-center w-full mt-24 mb-3">
+      <div className="flex flex-row items-start justify-start w-full mt-24 mb-3">
         <div className="font-beyonders select-none text-blue-900 drop-shadow-xl text-3xl text-center py-2 ml-5 mr-4">
           <h2>UPBEAT</h2>
         </div>
@@ -336,7 +423,7 @@ function GamePage() {
         >
           <HelpIcon />
         </button>
-        <div className="ml-auto mr-10 flex flex-row">
+        {/* <div className="ml-auto mr-10 flex flex-row">
           <div className="text-right mr-5">
             <h3 className="font-serif">You have time to</h3>
             <h3 className="font-serif">init your construction plan</h3>
@@ -348,7 +435,7 @@ function GamePage() {
             isActive={isRevPlan}
             setIsActive={setIsRevPlan}
           ></TimerCom>
-        </div>
+        </div> */}
       </div>
       <div className="flex flex-row w-full h-full justify-between">
         <div className="flex flex-col justify-start w-full h-full">

@@ -2,24 +2,14 @@ package com.project.game.repo.src.Controller;
 
 import com.project.game.chat.GameService;
 import com.project.game.repo.src.UPBEAT.Position;
-import com.project.game.rest.CommandType;
-import com.project.game.rest.GameState;
-import com.project.game.rest.RegionRest;
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 public class Territory {
     public static Territory instance;
     private GameService gameService;
 
-    public static Territory instance(int row, int col, long max_dep, long base_interest, GameService gm){
-        if(instance == null){
-            instance = new Territory(row, col, max_dep, base_interest, gm);
-        }
-        return instance;
+    public static void instance(int row, int col, long max_dep, long base_interest, GameService gm){
+        instance = new Territory(row, col, max_dep, base_interest, gm);
     }
 
     @Getter
@@ -75,10 +65,6 @@ public class Territory {
         }else{
             return true;
         }
-
-//        else if(regions[pos.i][pos.j].getPresident().equals(player)){
-//            return true;
-//        }
     }
 
     public long getRow(){

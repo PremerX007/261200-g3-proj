@@ -1,13 +1,9 @@
 import React, { useEffect } from "react";
 import useWebSocket from "../customHook/useWebSocket.ts";
 import { useState } from "react";
-import { useAppDispatch, useAppSelector } from "../store/hooks.ts";
+import { useAppSelector } from "../store/hooks.ts";
 import { selectUsername } from "../store/Slices/usernameSlice.ts";
-import {
-  selectWebSocket,
-  messageType,
-  setIsConnected,
-} from "../store/Slices/webSocketSlice.ts";
+import { selectWebSocket } from "../store/Slices/webSocketSlice.ts";
 import ReadyIcon from "./ReadyIcon.tsx";
 import NotReadyIcon from "./NotReadyIcon.tsx";
 import SettingPage from "./SettingPage.tsx";
@@ -75,7 +71,6 @@ function WaitingRoom() {
             ""
           )}
           <div className="bg-blue-200 p-8 rounded-2xl shadow-xl">
-            {/* Your login form or content goes here */}
             <h2 className="font-beyonders select-none text-blue-900 text-2xl text-center py-3 mx-40 align-top">
               GAME ROOM
             </h2>
