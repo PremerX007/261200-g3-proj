@@ -1,0 +1,594 @@
+*   commit 374bfa6abc8a5bf6ca4dcff76cc7466883619316
+|\  Merge: 2e4a293 a1ed7e1
+| | Author: PremerX007 <39229888+PremerX007@users.noreply.github.com>
+| | Date:   Mon Mar 25 01:58:17 2024 +0700
+| | 
+| |     Merge pull request #2 from PremerX007/web
+| |     
+| |     Complete some part
+| | 
+| * commit a1ed7e10480cc116ea88743ab437d911dab402f8
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Mon Mar 25 01:54:41 2024 +0700
+| | 
+| |     [game] add modal dialog in turn state
+| | 
+| * commit 6efdb0af535a2b5546289fd60a39c81055bedb72
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Sun Mar 24 13:31:59 2024 +0700
+| | 
+| |     [game] add crew move and add operation in button frontend
+| | 
+| * commit b48e5ebae06546a7fc85043142d4c06ffb796438
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Sat Mar 23 00:48:23 2024 +0700
+| | 
+| |     add modal and state initial construction plan
+| | 
+| * commit d51fe4a817f7938f666813f4f6907f573dc28028
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Sun Mar 10 16:52:09 2024 +0700
+| | 
+| |     [GamePage] add construction plan checker button and init crew, city center component
+| |   
+| *   commit 0d7c0215234bb85e1fa449690b1a25b063a12fb1
+| |\  Merge: 7920346 e601bcf
+| | | Author: PremerX007 <39229888+PremerX007@users.noreply.github.com>
+| | | Date:   Sat Mar 9 21:11:51 2024 +0700
+| | | 
+| | |     Merge pull request #1 from PremerX007/web-Gamepage
+| | |     
+| | |     merge gamepage to web
+| | |   
+| | *   commit e601bcf9c7f7ecbdaa93156b52e03066dc0f3215
+| | |\  Merge: bf97c50 7920346
+| | |/  Author: PremerX007 <39229888+PremerX007@users.noreply.github.com>
+| |/|   Date:   Sat Mar 9 21:11:02 2024 +0700
+| | |   
+| | |       Merge branch 'web' into web-Gamepage
+| | | 
+| * | commit 7920346aca0404daffed3f5a8c79293323c541df
+| | | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | | Date:   Sat Mar 9 14:43:19 2024 +0700
+| | | 
+| | |     add game setting page and change component modal (more beautiful)
+| | | 
+| * | commit dc4961d572d2c165d86a1e6141cb3c8236a5e197
+| | | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | | Date:   Fri Mar 8 02:41:02 2024 +0700
+| | | 
+| | |     fix when user try to connect with duplicate username
+| | | 
+| | * commit bf97c50819bd07b09c18d3b80195e575f96d9546
+| | | Author: Mr.Job <patiphan_klinhom@cmu.ac.th>
+| | | Date:   Sat Mar 9 19:13:26 2024 +0700
+| | | 
+| | |     Update gamepage
+| | | 
+| | * commit b0ae4a34031f230ea82ad550e669b6261126d941
+| | | Author: Mr.Job <patiphan_klinhom@cmu.ac.th>
+| | | Date:   Sat Mar 9 00:40:27 2024 +0700
+| | | 
+| | |     Change color lavender
+| | | 
+| | * commit cb97bef4d6afc969567d3338954960849d8d4aa4
+| | | Author: Mr.Job <patiphan_klinhom@cmu.ac.th>
+| | | Date:   Sat Mar 9 00:33:37 2024 +0700
+| | | 
+| | |     re desing page
+| | | 
+| | * commit 3b1a6927317fa8b02d7287f6d7cd374bf4c4755b
+| |/  Author: Mr.Job <patiphan_klinhom@cmu.ac.th>
+| |   Date:   Fri Mar 8 23:07:47 2024 +0700
+| |   
+| |       add hexagon & hexagrid
+| | 
+| * commit 1352f188e52864ea229660c9205159dd6543d1d5
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Thu Mar 7 20:51:47 2024 +0700
+| | 
+| |     initial GamePage
+| | 
+| * commit 6ca64da3114cd1f08fc359fce9b08f97398e3d22
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Thu Mar 7 20:35:22 2024 +0700
+| | 
+| |     update WaitingRoom (assign admin role when admin disconnect )
+| | 
+| * commit be5a53c53d9c8a17a727a00a879dab8d70a4eb6a
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Thu Mar 7 18:46:45 2024 +0700
+| | 
+| |     update WaitingRoom (can see people who online)
+| | 
+| * commit c8edf6ad157680658274c4a4f0c303a033cad9af
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Thu Mar 7 13:25:05 2024 +0700
+| | 
+| |     update backend (hook and ws)
+| | 
+| * commit c5fe777f3288360086cf78cbaaad96f99e54393e
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Thu Mar 7 13:24:02 2024 +0700
+| | 
+| |     init Waiting room and update backend ws config
+| | 
+| * commit 78b096495ada59488b90b87f01788bae39206427
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Wed Mar 6 21:06:03 2024 +0700
+| | 
+| |     first login page
+| | 
+* | commit 2e4a293b656b47e9fe517a2125909c44e1f06661
+|/  Author: Mr.Job <patiphan_klinhom@cmu.ac.th>
+|   Date:   Thu Mar 7 19:15:38 2024 +0700
+|   
+|       get commit
+|   
+| * commit 12fb5193b5da980c884276319e24fc998017c499
+| | Author: Mr.Job <patiphan_klinhom@cmu.ac.th>
+| | Date:   Fri Mar 1 13:05:06 2024 +0700
+| | 
+| |     Connect spring boot with front-end & design front-end
+| | 
+| * commit b265b34db023f4ae6c3e07c1952507f736cfcf5d
+|/  Author: Mr.Job <patiphan_klinhom@cmu.ac.th>
+|   Date:   Fri Mar 1 12:58:54 2024 +0700
+|   
+|       Create front-end & connect spring boot
+| 
+* commit 90b01e88a4ac4e41c41e7e72771d0492de9ce42f
+| Author: PremerX007 <39229888+PremerX007@users.noreply.github.com>
+| Date:   Wed Feb 14 22:00:55 2024 +0700
+| 
+|     Delete .idea directory
+| 
+* commit 10783de4c7feae05b4709ddc94b92ea0c2ab8fc6
+| Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| Date:   Wed Feb 14 21:57:31 2024 +0700
+| 
+|     add vcs.xml to main [intellij error]
+| 
+* commit b4a8a7d1b1afffd72742d280731a21d3db61810e
+| Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| Date:   Wed Feb 14 21:48:07 2024 +0700
+| 
+|     add gitignore commit to main [intellij error]
+|   
+| * commit 4afe85bc7883c0008103aee6b73a044930636b20
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Fri Mar 1 12:30:33 2024 +0700
+| | 
+| |     add more SpecialVariable and InformationExpression testcase
+| | 
+| * commit 5442cdea4f113542fe047e88d355a3253b43ca8c
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Fri Mar 1 02:26:18 2024 +0700
+| | 
+| |     add more PlanParser testcase
+| | 
+| * commit 8d02b09a416b56823f6b992a0b40b7ae0dc204e5
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Fri Mar 1 02:25:44 2024 +0700
+| | 
+| |     modify create player func and make a crew back to home when turn end
+| | 
+| * commit 54b9c327637a707d4cb8b8d1468a15eaf371a040
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Fri Mar 1 02:19:42 2024 +0700
+| | 
+| |     add more testcase in donecommand and InfomationExpr
+| | 
+| * commit c80c3f3032ea5bd5af319caa7ee544b91a186a10
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Thu Feb 29 01:24:26 2024 +0700
+| | 
+| |     fix tokenizer to accept more alphanumeric characters
+| | 
+| * commit 14ed950ec44f77579a9636576ba0af83b6bdb5ef
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Thu Feb 29 01:23:07 2024 +0700
+| | 
+| |     add testcase for if-else and while loop statement
+| | 
+| * commit 27fadc277f4d01b97cdf187549bdb9961e00e94b
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Wed Feb 28 21:52:18 2024 +0700
+| | 
+| |     update setting of project dependencies
+| | 
+| * commit 8f001dbe12385aaf7586b1097c6e73dff8b9ff94
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Wed Feb 28 16:16:11 2024 +0700
+| | 
+| |     add every command statement AST to PlanParser
+| | 
+| * commit 0d7aa46804ce9ecabb6d7fe48524ba5e8d35ed18
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Wed Feb 28 12:46:52 2024 +0700
+| | 
+| |     modify parameter of AssignIdentifier record
+| | 
+| * commit 5cb66ffa24759fed0447bb39556bc68bda25f38a
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Wed Feb 28 12:45:34 2024 +0700
+| | 
+| |     modify BlockStatement (Data Structure) and add config file
+| | 
+| * commit eeb16978bc27b3ac6831d72f7453b37b02dfd187
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Wed Feb 28 12:43:10 2024 +0700
+| | 
+| |     modify WhileStatement and BlockStatement (Data Structure)
+| | 
+| * commit 3d97d6671d48201f9d9dd325654b78983ccf2271
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Wed Feb 28 12:40:50 2024 +0700
+| | 
+| |     modify variable expr to eval special variable
+| | 
+| * commit 4b3f89776d4cf06e30fad33bb47d141cb573bb41
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Wed Feb 28 12:38:48 2024 +0700
+| | 
+| |     add InfoExpression statement (nearby and opponent)
+| | 
+| * commit c59b1db8b6cb4d291ce310dbfcdf34952551ceb5
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Wed Feb 28 12:30:23 2024 +0700
+| | 
+| |     add Shoot command operate and evaluator
+| | 
+| * commit de82328f055dc4a7385beb80e85ac9a9902c7246
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Wed Feb 28 12:10:00 2024 +0700
+| | 
+| |     add invest and collect command and modify evaluator
+| | 
+| * commit ce274b6f16be75cbdb1c5a11eeaa55d979b78922
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Wed Feb 28 00:32:41 2024 +0700
+| | 
+| |     modify MoveCommand evaluator
+| | 
+| * commit b352d3379e35eb81357274841141f815275fcaee
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Wed Feb 28 00:31:09 2024 +0700
+| | 
+| |     modify move next position command
+| | 
+| * commit 4567b9a4e18846ae7cda332f0871e9522e25f2d2
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Wed Feb 28 00:09:28 2024 +0700
+| | 
+| |     add Done command and Relocate command
+| | 
+| * commit 20acf8b3b8a7e3777b1c4897ea7677148a7ee122
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Tue Feb 27 23:58:52 2024 +0700
+| | 
+| |     add Player and Crew with default method
+| | 
+| * commit 2600ad88b6e2b414066c24bfc401f093653cfeae
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Tue Feb 27 23:52:51 2024 +0700
+| | 
+| |     add Region class and init city center method
+| | 
+| * commit 172010765f3aa4d7657b94c4907632bbde550a6b
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Tue Feb 27 23:48:36 2024 +0700
+| | 
+| |     add Game control and Territory (simulate)
+| | 
+| * commit b3bf738abd375eb48f29b381743501c44ed1774b
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Tue Feb 27 22:23:34 2024 +0700
+| | 
+| |     refactor parameter for Statement interface (add Player class)
+| | 
+| * commit a4eb02104151f5b6c878b72fac775e9cdfaf66e8
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Tue Feb 27 22:11:37 2024 +0700
+| | 
+| |     refactor parameter for expression interface
+| | 
+| * commit 135ec4345707d97dccc80ca580ecb9564cdb9088
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Tue Feb 27 22:07:46 2024 +0700
+| | 
+| |     make tokenizer support StringReader
+| | 
+| * commit 088da6998e827fb0ef6ff84e98ca87cc4dbdd218
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Tue Feb 27 22:04:27 2024 +0700
+| | 
+| |     fix tokenizer to accept underscore symbol
+| | 
+| * commit 20cc14ae890ff3d63bb18229f7bd1724046f3daf
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Sat Feb 17 01:57:02 2024 +0700
+| | 
+| |     adjust java's long data type in number and binding map
+| | 
+| * commit 5ea7c08589d6ce4e1140b470a944fb7a8707b228
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Sat Feb 17 01:18:46 2024 +0700
+| | 
+| |     edit syntax in statement interface
+| | 
+| * commit 45663c80d926d5bda81cd5baa9132055acdf575c
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Sat Feb 17 01:16:59 2024 +0700
+| | 
+| |     change return type value from parser
+| | 
+| * commit a2f70c0b3d590f1a578ad78bd51a7ef2d4bc490e
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Wed Feb 14 23:05:10 2024 +0700
+| | 
+| |     add project config file to Tokenizer branch
+| | 
+| * commit 547be0c6fba59d208c24176806aa5add867d2087
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Tue Feb 13 01:45:55 2024 +0700
+| | 
+| |     edit throw msg in Parser
+| | 
+| * commit 295e6ff7704f48a5031f35e8fd459ca859f260e0
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Tue Feb 13 01:42:56 2024 +0700
+| | 
+| |     protect assign identifier of special variable
+| | 
+| * commit e45bea59db2a98f698f2e90a066335bcb79faf40
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Sun Feb 11 21:11:27 2024 +0700
+| | 
+| |     move file into the same category packages (Expression and Statement)
+| | 
+| * commit 7142814616fa29c786d763c8c13d4c6d339bcdaa
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Sun Feb 11 20:57:18 2024 +0700
+| | 
+| |     add Junit test for Tokenizer
+| | 
+| * commit 3a3d5b4efa0a7ff47ba0f195edc02b9cdd24626f
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Sun Feb 11 17:12:06 2024 +0700
+| | 
+| |     edit methods throws in Parser and Tokenizer
+| | 
+| * commit 045a4eace1ca927a1cce5d78931263d2a6b40c89
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Sun Feb 11 17:04:44 2024 +0700
+| | 
+| |     add specific throwable like EvalError, SyntaxError, LexicalError
+| | 
+| * commit 998da77c5734645c077684e74e9bfbc66e1d85e6
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Sun Feb 11 13:32:07 2024 +0700
+| | 
+| |     change BlockStatement and WhileStatement from record to class (fix static queue)
+| | 
+| * commit c585e1c04901e7ea3f3a4d534fd7c461f0bc5612
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Sun Feb 11 12:51:52 2024 +0700
+| | 
+| |     add ifStatement evaluator
+| | 
+| * commit 63c5343bffcc1110cba31a3b3291fcc4239699ab
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Sun Feb 11 12:51:19 2024 +0700
+| | 
+| |     add throw exception when there is no statement in PlanParser
+| | 
+| * commit 70243da4d5cd112d0532e17781c1eea3b90f5ffc
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Sun Feb 11 12:48:23 2024 +0700
+| | 
+| |     fix queue in BlockStatement dequeue object when evaluate
+| | 
+| * commit 6be84d4e644526b4244b47884a028bc8e0e9bbea
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Sun Feb 11 02:15:27 2024 +0700
+| | 
+| |     create and manage text files for testing
+| | 
+| * commit 50a9861e6e648360b4b21abcb26fef869d491445
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Sun Feb 11 02:01:36 2024 +0700
+| | 
+| |     make evaluator no-op when user assign special variables
+| | 
+| * commit 6b7cb347a090c7f3f23cf4a7a062a6569c9bf224
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Sun Feb 11 01:42:55 2024 +0700
+| | 
+| |     update evaluator and parser [AST and Hashmap]
+| | 
+| * commit 8221e060d58ef815d831ac8dca0fcd72bafe7d12
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Wed Feb 7 20:13:04 2024 +0700
+| | 
+| |     Checking git version control
+| | 
+| * commit 26ba01c5e536195d55d42f8a2ee11bcc58c7815b
+| | Author: Natan <Th3than@gmail.com>
+| | Date:   Wed Feb 7 20:09:50 2024 +0700
+| | 
+| |     Chack
+| | 
+| * commit 7b8ca8fa4dc202f07a3b819e16812f39f7a87584
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Wed Feb 7 19:45:37 2024 +0700
+| | 
+| |     .idea config file of project Intellij (dont care)
+| | 
+| * commit 2124613b8265cf0acebb05fed35455f9bb13ba9e
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Wed Feb 7 15:40:49 2024 +0700
+| | 
+| |     config file of project Intellij (dont care)
+| | 
+| * commit 8da32741b51c13f815deb17eff422b6d588af628
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Wed Feb 7 15:39:31 2024 +0700
+| | 
+| |     update Command and Statement operation part in Parser
+| |   
+| | * commit ab33769992b9c870b230f6408d2e3cf278119cdd
+| | | Author: Natan <Th3than@gmail.com>
+| | | Date:   Thu Feb 22 20:07:22 2024 +0700
+| | | 
+| | |     Merge Maps-Player to Maps-Player and Delete Maps-Player
+| | | 
+| | * commit 1b0a2440c2454e34a0cdaed92a696976c1f468eb
+| | | Author: Natan <Th3than@gmail.com>
+| | | Date:   Thu Feb 22 20:01:48 2024 +0700
+| | | 
+| | |     Add Player Class no action
+| | | 
+| | * commit 18d574787609e46be239fa61cb859e38aa3d9667
+| | | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | | Date:   Wed Feb 14 23:04:04 2024 +0700
+| | | 
+| | |     fix config file (.iml) in Maps branch
+| | | 
+| | * commit f46f7206161c7bc8722c7ede55695e00760ca2ec
+| | | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | | Date:   Wed Feb 14 22:56:27 2024 +0700
+| | | 
+| | |     add config file in Map branch
+| | | 
+| | * commit 8ed541ec3d6f10e022ac6e41cbc2117953bc4f7c
+| | | Author: Natan <Th3than@gmail.com>
+| | | Date:   Wed Feb 14 22:17:38 2024 +0700
+| | | 
+| | |     Check error
+| | | 
+| | * commit 3aea51e60730c2182ed798af068299c211213ded
+| | | Author: Natan <Th3than@gmail.com>
+| | | Date:   Wed Feb 14 22:14:15 2024 +0700
+| | | 
+| | |     Put idea codes
+| | | 
+| | * commit 370fe1d871d1def3b23c466670cc5e71b5863388
+| | | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | | Date:   Wed Feb 14 22:05:58 2024 +0700
+| | | 
+| | |     manage source file in Maps branch
+| | | 
+| | * commit 3ac6c5b231a7889ee22682968d3edce55a2f67d9
+| | | Author: Mr.Job <patiphan_klinhom@cmu.ac.th>
+| | | Date:   Wed Feb 7 17:38:29 2024 +0700
+| | | 
+| | |     add .idea
+| | | 
+| | * commit 7bddfa70d7e60cbc922aaedaf1ed9607fa52d827
+| | | Author: Mr.Job <patiphan_klinhom@cmu.ac.th>
+| | | Date:   Wed Feb 7 15:49:47 2024 +0700
+| | | 
+| | |     Improve computeConnect Method in Northern & Southern
+| | | 
+| | * commit cbfa17773e03f96825b7c160e883d72731be2613
+| | | Author: Mr.Job <patiphan_klinhom@cmu.ac.th>
+| | | Date:   Wed Feb 7 15:02:01 2024 +0700
+| | | 
+| | |     Move class Mapping & class Region to Maps package
+| | | 
+| | * commit c78db07e60777f3a5f45b93524a446f5a8b2ddc8
+| | | Author: Mr.Job <patiphan_klinhom@cmu.ac.th>
+| | | Date:   Wed Feb 7 14:58:16 2024 +0700
+| | | 
+| | |     Implementation class Mapping & class Region in some part
+| | | 
+| | * commit ee1cde8ac7a9a3b16c23d2e582bc2a1b424f9e2e
+| |/  Author: Mr.Job <patiphan_klinhom@cmu.ac.th>
+|/|   Date:   Wed Feb 7 14:55:03 2024 +0700
+| |   
+| |       Implementation class Mapping & class Region in some part
+| |   
+| | * commit 3187119242b9528963dd57152ce026ce1c0335f9
+| | | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | | Date:   Wed Feb 14 23:00:57 2024 +0700
+| | | 
+| | |     add config file (.iml) in Map branch
+| | | 
+| | * commit 3f61b702ec404c1b09b19a28c881c013e13cf472
+| | | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | | Date:   Wed Feb 14 22:51:04 2024 +0700
+| | | 
+| | |     manage config file in Player branch
+| | | 
+| | * commit 1e8e08a25fe70ee1b60c23d2325823752e2f87ae
+| | | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | | Date:   Wed Feb 14 22:46:23 2024 +0700
+| | | 
+| | |     manage config file in Player branch
+| | | 
+| | * commit eec5b23e32ae8d69c2a0d6b8ec437e51db8a7b40
+| | | Author: Natan <Th3than@gmail.com>
+| | | Date:   Mon Feb 5 13:53:55 2024 +0700
+| | | 
+| | |     Move player to package Players and add Crew
+| | | 
+| | * commit 28b93761044b0caae4a32814c46a62ae98512ecd
+| |/  Author: Natan <Th3than@gmail.com>
+|/|   Date:   Sun Feb 4 22:38:57 2024 +0700
+| |   
+| |       Start write Player code
+| |   
+| | * commit 74d69df73574f8ec7ea065fa5278bb8a413e87c6
+| |/  Author: Natan <Th3than@gmail.com>
+| |   Date:   Wed Feb 7 17:21:12 2024 +0700
+| |   
+| |       error
+| | 
+| * commit 06213f344badc8a5eff052918208af018448d670
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Wed Feb 7 14:25:10 2024 +0700
+| | 
+| |     move Tokenizer to package Tokenizer
+| | 
+| * commit 6edf7c234841cd8457157172569da9eda4a8ecc3
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Wed Feb 7 14:17:45 2024 +0700
+| | 
+| |     init PlanParser and add basic arithmetic operators in parser
+| | 
+| * commit 69f3fd06ba21bd4448e1d4b30749c4a1faaa6039
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Mon Feb 5 01:31:06 2024 +0700
+| | 
+| |     make Tokenizer support end-of-line comments.
+| | 
+| * commit e00378703afbae43a6017f7e72749f0c9548b555
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Mon Feb 5 01:00:16 2024 +0700
+| | 
+| |     Change the reader from reading line by line to reading all and concat with StringBuilder in Tokenizer
+| | 
+| * commit 9b4c4de49c5f2ff6ecc6a6f95b4702350120b44e
+| | Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+| | Date:   Mon Feb 5 00:50:27 2024 +0700
+| | 
+| |     fix receiver string in FileReader and edit some Tokenizer condition
+| | 
+| * commit 0220fcce70b15a51abd14ccf75555ab4353156a3
+|/  Author: Prem Bannawat <bannawat_v@cmu.ac.th>
+|   Date:   Mon Feb 5 00:26:31 2024 +0700
+|   
+|       Create starter Tokenizer (Integrate ConstructionPlan reader)
+| 
+* commit c901410a8b78fd9ab73cd4ad1f0133edee333882
+| Author: Patiphan Klinhom <110966004+jobpatiphan@users.noreply.github.com>
+| Date:   Wed Jan 24 16:51:25 2024 +0700
+| 
+|     Overview document project
+| 
+* commit 7260c6ca351ab67cacedcc9ff9fb8211dbd5d37c
+  Author: PremerX007 <39229888+PremerX007@users.noreply.github.com>
+  Date:   Wed Jan 24 13:42:33 2024 +0700
+  
+      Initial commit
